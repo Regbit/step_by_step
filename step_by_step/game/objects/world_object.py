@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Optional, List, Tuple, Union
+from typing import Optional, List, Tuple, Union, TYPE_CHECKING
 
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.managers.object_manager import ObjectManager
 from step_by_step.game.objects.settings import NO_BASE_NAME
 from step_by_step.graphics.draw_data import DrawData
 from step_by_step.graphics.screen_object import ScreenObject
@@ -53,22 +52,7 @@ class _BaseGameObject(abc.ABC):
 
 
 class GameObject(_BaseGameObject):
-
-	_object_manager = None
-
-	@classmethod
-	def _object_manager_add(cls, obj):
-		if cls._object_manager is None:
-			cls._object_manager = ObjectManager
-		return cls._object_manager.add(obj)
-
-	@abc.abstractmethod
-	def self_destruct_clean_up(self):
-		raise NotImplementedError()
-
-	def __init__(self):
-		self.object_id = self._object_manager_add(self)
-		log.debug(f'Initialized "{self}"')
+	pass
 
 
 class WorldObject(GameObject):
@@ -81,7 +65,7 @@ class WorldObject(GameObject):
 	size: Vector2f
 	movement_velocity: float
 	rotation_velocity: float
-	orientation: Vector2f
+	orientation_vec: Vector2f
 	_batch_group: BatchGroup = BatchGroup.DEFAULT
 	_background_drawable: ScreenObject = None
 	_main_drawable: ScreenObject = None
@@ -128,13 +112,13 @@ class WorldObject(GameObject):
 		return self._main_drawable.screen_data
 
 	def rotate(self, rad: float):
-		self.orientation.rotate(rad)
+		self.orientation_vec.rotate(rad)
 		for drawable in self.drawable_list:
 			drawable.rotate(rad)
 
 	def rotate_towards(self, destination: Vector2f):
 		vec = destination - self.world_pos
-		angle = self.orientation.angle_between(vec)
+		angle = self.orientation_vec.angle_between(vec)
 		if abs(angle) > 0.001:
 			mul = 1 if angle > 0 else -1
 			to_rotate = self.rotation_velocity * mul if abs(angle) > self.rotation_velocity else angle
@@ -143,7 +127,7 @@ class WorldObject(GameObject):
 	def move(self, vec: Union[Vector2f, float]):
 		if isinstance(vec, (int, float)):
 			dist = vec
-			vec = self.orientation.copy()
+			vec = self.orientation_vec.copy()
 			vec.set_len(dist)
 		self.world_pos += vec
 		for drawable in self.drawable_list:
@@ -152,7 +136,7 @@ class WorldObject(GameObject):
 	def move_towards(self, destination: Vector2f):
 		dist = self.world_pos.dist(destination)
 		to_travel = self.movement_velocity if dist > self.movement_velocity else dist
-		self.move(Vector2f(r=to_travel, a=self.orientation.a))
+		self.move(Vector2f(r=to_travel, a=self.orientation_vec.a))
 
 	def select(self) -> bool:
 		if self.is_selectable and self._foreground_drawable:
@@ -197,7 +181,7 @@ class WorldObject(GameObject):
 		self.is_movable = is_movable
 		self.movement_velocity = movement_velocity
 		self.rotation_velocity = rotation_velocity
-		self.orientation = orientation if orientation else Vector2f(0, 1)
+		self.orientation_vec = orientation if orientation else Vector2f(0, 1)
 		self._background_drawable = background_drawable
 		self._main_drawable = main_drawable
 		self._foreground_drawable = foreground_drawable

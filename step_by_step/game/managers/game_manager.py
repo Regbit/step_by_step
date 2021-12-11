@@ -4,12 +4,9 @@ from typing import Optional, Dict, Any, List
 
 from pyglet.window import key, mouse
 
-from step_by_step.game.managers import KeyEvent, ObjectManager, ScreenManager
-from step_by_step.game.objects.path import Waypoint, Trajectory
+from step_by_step.game.managers import KeyEvent, ObjectManager, ScreenManager, JobManager
 from step_by_step.game.objects.world_object import WorldObject
-from step_by_step.game.objects.unit import Building, ResourceNode, Vehicle
-from step_by_step.game.objects.jobs.task import MoveToTask
-from step_by_step.common.vector import Vector2f
+
 
 log = logging.getLogger('Game Manager')
 
@@ -20,101 +17,96 @@ class GameManager:
 	_pressed_keys = set()
 	_window_data = dict()
 	_frame_rate = 0, time()
+
+	_screen_manager: ScreenManager
+	_object_manager: ObjectManager
+	_job_manager: JobManager
+
 	selected_object: Optional[WorldObject] = None
 
-	@classmethod
-	def init(cls, screen_width: int, screen_height: int):
-		ScreenManager.init(screen_width, screen_height)
+	def __init__(self, screen_width: int, screen_height: int):
+		self._screen_manager = ScreenManager(screen_width, screen_height)
+		self._object_manager = ObjectManager()
+		self._job_manager = JobManager()
 
-		b = Building(Vector2f(200, 100))
-		rn = ResourceNode(Vector2f(1000, 1000))
-		v = Vehicle(Vector2f(100, 100))
-		w = Waypoint(Vector2f(300, 100))
-		t = Trajectory(Vector2f(100, 100), Vector2f(300, 100))
-		MoveToTask(actor=v, destination=rn)
+	def world_object_list(self) -> List[WorldObject]:
+		return [o for o in self._object_manager.objects_dict.values() if isinstance(o, WorldObject)]
 
-	@classmethod
-	def world_object_list(cls) -> List[WorldObject]:
-		return [o for o in ObjectManager.objects_dict.values() if isinstance(o, WorldObject)]
+	def select(self, mouse_x: int, mouse_y: int):
+		if self.selected_object:
+			self.selected_object.deselect()
 
-	@classmethod
-	def select(cls, mouse_x: int, mouse_y: int):
-		if cls.selected_object:
-			cls.selected_object.deselect()
-
-		cls.selected_object = None
-		for obj in cls.world_object_list():
+		self.selected_object = None
+		for obj in self.world_object_list():
 			if obj.is_selectable:
-				if ScreenManager.check_mouse_over_object(mouse_x, mouse_y, obj):
+				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.select():
-						cls.selected_object = obj
+						self.selected_object = obj
 						break
 					else:
 						log.warning(f'Could not select object under cursor! {obj}')
 
-	@classmethod
-	def delete_selected_object(cls) -> bool:
-		return ObjectManager.trigger_self_destruct(object_id=cls.selected_object.object_id)
+	def delete_selected_object(self) -> bool:
+		if self.selected_object:
+			object_id = self.selected_object.object_id
+			self.selected_object.object_id = None
+			self._object_manager.trigger_self_destruct(object_id=object_id)
+			return True
+		return False
 
-	@classmethod
-	def key_update(cls, key: int, event_type: KeyEvent, data: Dict[str, Any] = None):
+	def key_update(self, key: int, event_type: KeyEvent, data: Dict[str, Any] = None):
 		if event_type == KeyEvent.PRESSED:
-			cls._pressed_keys.add(key)
+			self._pressed_keys.add(key)
 		if event_type == KeyEvent.RELEASED:
-			cls._pressed_keys.remove(key)
+			self._pressed_keys.remove(key)
 		if data:
-			cls._window_data.update(data)
+			self._window_data.update(data)
 
-	@classmethod
-	def _key_action(cls):
-		if key.SPACE in cls._pressed_keys:
-			cls._print_info = not cls._print_info
-		if key.DELETE in cls._pressed_keys:
-			cls.delete_selected_object()
-		if mouse.LEFT in cls._pressed_keys:
-			pos = cls._window_data.get('mouse')
+	def _key_action(self):
+		if key.SPACE in self._pressed_keys:
+			self._print_info = not self._print_info
+		if key.DELETE in self._pressed_keys:
+			self.delete_selected_object()
+		if mouse.LEFT in self._pressed_keys:
+			pos = self._window_data.get('mouse')
 			if pos:
-				cls.select(*pos)
+				self.select(*pos)
 
-	@classmethod
-	def game_update(cls):
-		cls._key_action()
-		cls._camera_scroll_action()
+	def game_update(self):
+		self._key_action()
+		self._camera_scroll_action()
 
-	@classmethod
-	def camera_drag(cls, dx: float, dy: float):
-		if mouse.MIDDLE in cls._pressed_keys:
-			ScreenManager.camera_drag(dx, dy)
+	def camera_drag(self, dx: float, dy: float):
+		if mouse.MIDDLE in self._pressed_keys:
+			self._screen_manager.camera_drag(dx, dy)
 
-	@classmethod
-	def camera_scroll_flag(cls, x: int, y: int):
-		ScreenManager.camera_scroll_flag(x, y)
+	def camera_scroll_flag(self, x: int, y: int):
+		self._screen_manager.camera_scroll_flag(x, y)
 
-	@classmethod
-	def _camera_scroll_action(cls):
-		if mouse.MIDDLE not in cls._pressed_keys:
-			ScreenManager.camera_scroll_action()
+	def _camera_scroll_action(self):
+		if mouse.MIDDLE not in self._pressed_keys:
+			self._screen_manager.camera_scroll_action()
 
-	@classmethod
-	def refresh_draw_data(cls):
-		ScreenManager.refresh_draw_data(cls.world_object_list())
+	def refresh_draw_data(self):
+		self._screen_manager.refresh_draw_data(self.world_object_list())
 
-	@classmethod
-	def draw(cls):
-		ScreenManager.draw()
+	def draw(self):
+		self._screen_manager.draw()
 
-	@classmethod
-	def post_code(cls):
-		if time() - cls._frame_rate[1] > 1:
-			if cls._print_info:
+	def post_code(self):
+		if time() - self._frame_rate[1] > 1:
+			if self._print_info:
 				print('-' * 25)
-				print('fps:', cls._frame_rate)
-				print('Selected object:', cls.selected_object)
-				print('Window data', cls._window_data)
-				print('Keys pressed', cls._pressed_keys)
+				print('[FPS]:', self._frame_rate)
+				print('[Selected object]:', self.selected_object)
+				print('[Window data]:', self._window_data)
+				print('[Keys pressed]:', self._pressed_keys)
+				print('[Objects]:')
+				for obj_id, obj in self._object_manager.objects_dict.items():
+					print('\t', obj_id, obj)
 				print('-' * 25)
 				print()
 
-			cls._frame_rate = 0, time()
+			self._frame_rate = 0, time()
 		else:
-			cls._frame_rate = cls._frame_rate[0] + 1, cls._frame_rate[1]
+			self._frame_rate = self._frame_rate[0] + 1, self._frame_rate[1]
