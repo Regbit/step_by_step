@@ -11,5 +11,3 @@ def around(val, other_val, d) -> bool:
 
 def vertex_in_zone(x: float, y: float, zone_pos: Vector2f, zone_size: Vector2f) -> bool:
 	return around(x, zone_pos.x, zone_size.x) and around(y, zone_pos.y, zone_size.y)
-
-

@@ -14,11 +14,8 @@ class App(pyglet.window.Window):
 
 	def __init__(self):
 		super().__init__(self.w, self.h, caption='Step by Step')
-
 		pyglet.gl.glClearColor(0, 0, 0, 1)
-
 		self.alive = True
-
 		self._game_manager = GameManager(screen_width=self.w, screen_height=self.h)
 
 	def render(self):

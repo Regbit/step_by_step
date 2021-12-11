@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Optional, List, Tuple, Union, TYPE_CHECKING
+from typing import Optional, List, Tuple, Union
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.settings import NO_BASE_NAME
