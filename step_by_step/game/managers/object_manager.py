@@ -1,21 +1,21 @@
 from typing import Dict, Optional, List
 
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.objects.world_object import GameObject
-from step_by_step.game.objects.unit import Building, ResourceNode, Vehicle
+from step_by_step.game.objects.game_object import DrawnGameObject
+from step_by_step.game.objects.units import Building, ResourceNode, Vehicle
 
 
 class ObjectManager:
 
 	_next_object_id = -1
-	objects_dict: Dict[int, Optional[GameObject]] = dict()
+	objects_dict: Dict[int, Optional[DrawnGameObject]] = dict()
 
 	def __init__(self):
 		self.add_all(
 			[
-				Building(world_pos=Vector2f(200, 100)),
-				ResourceNode(world_pos=Vector2f(1000, 1000)),
-				Vehicle(world_pos=Vector2f(100, 100)),
+				Building(pos=Vector2f(200, 100)),
+				ResourceNode(pos=Vector2f(1000, 1000)),
+				Vehicle(pos=Vector2f(100, 100)),
 			]
 		)
 
@@ -23,10 +23,10 @@ class ObjectManager:
 		self._next_object_id += 1
 		return self._next_object_id
 
-	def add_all(self, obj_list: List[GameObject]) -> List[GameObject]:
+	def add_all(self, obj_list: List[DrawnGameObject]) -> List[DrawnGameObject]:
 		return [self.add(obj) for obj in obj_list]
 
-	def add(self, obj: GameObject) -> GameObject:
+	def add(self, obj: DrawnGameObject) -> DrawnGameObject:
 		new_id = self.next_object_id()
 		obj.object_id = new_id
 		self.objects_dict[new_id] = obj

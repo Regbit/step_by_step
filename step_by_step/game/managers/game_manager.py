@@ -5,7 +5,7 @@ from typing import Optional, Dict, Any, List
 from pyglet.window import key, mouse
 
 from step_by_step.game.managers import KeyEvent, ObjectManager, ScreenManager, JobManager
-from step_by_step.game.objects.world_object import WorldObject
+from step_by_step.game.objects.units.world_object import WorldObject
 
 
 log = logging.getLogger('Game Manager')

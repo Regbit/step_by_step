@@ -7,7 +7,7 @@ from pyglet.graphics import Batch
 from step_by_step.common.helpers import vertex_in_zone
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.managers.settings import ScreenScrollFlag
-from step_by_step.game.objects.world_object import WorldObject
+from step_by_step.game.objects.units.world_object import WorldObject
 from step_by_step.graphics.camera import Camera
 from step_by_step.graphics.objects.settings import BatchGroup
 

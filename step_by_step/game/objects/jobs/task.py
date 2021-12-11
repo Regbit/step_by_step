@@ -4,7 +4,8 @@ from typing import List, Union, Optional
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.jobs.action import Action, MoveToAction
 from step_by_step.game.objects.jobs.settings import Status, TaskType
-from step_by_step.game.objects.world_object import GameObject, WorldObject
+from step_by_step.game.objects.units.world_object import WorldObject
+from step_by_step.game.objects.game_object import GameObject
 
 
 class _BaseTask(abc.ABC):

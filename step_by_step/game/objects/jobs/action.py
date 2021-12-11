@@ -3,7 +3,8 @@ from typing import Union
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.jobs.settings import Status
-from step_by_step.game.objects.world_object import GameObject, WorldObject
+from step_by_step.game.objects.units.world_object import WorldObject
+from step_by_step.game.objects.game_object import GameObject
 
 
 class _BaseAction(abc.ABC):
@@ -45,11 +46,11 @@ class MoveToAction(Action):
 			self.update_status(Status.IN_PROGRESS)
 		if self.status.IN_PROGRESS:
 			try:
-				start: Vector2f = self.actor.world_pos
+				start: Vector2f = self.actor.pos
 				finish: Vector2f = self.destination
 
 				if not isinstance(self.destination, Vector2f):
-					finish = self.destination.world_pos
+					finish = self.destination.pos
 
 				if start.dist(finish) > self.target_proximity:
 					# rotate actor
