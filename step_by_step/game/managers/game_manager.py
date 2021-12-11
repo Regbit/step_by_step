@@ -6,6 +6,7 @@ from pyglet.window import key, mouse
 
 from step_by_step.game.managers import KeyEvent, ObjectManager, ScreenManager, JobManager
 from step_by_step.game.objects.game_object import DrawnGameObject
+from step_by_step.game.objects.gui.gui_object import GUIObject
 
 
 log = logging.getLogger('Game Manager')
@@ -22,7 +23,8 @@ class GameManager:
 	_object_manager: ObjectManager
 	_job_manager: JobManager
 
-	highlighted_object: Optional[DrawnGameObject] = None
+	highlighted_object: Optional[GUIObject] = None
+	clicked_object: Optional[GUIObject] = None
 	selected_object: Optional[DrawnGameObject] = None
 
 	def __init__(self, screen_width: int, screen_height: int):
@@ -32,6 +34,34 @@ class GameManager:
 
 	def drawn_object_list(self) -> List[DrawnGameObject]:
 		return [o for o in self._object_manager.objects_dict.values() if isinstance(o, DrawnGameObject)]
+
+	def highlight(self, mouse_x: int, mouse_y: int):
+		if self.highlighted_object:
+			self.highlighted_object.dehighlight()
+
+		self.highlighted_object = None
+		for obj in self.drawn_object_list():
+			if isinstance(obj, GUIObject) and obj.is_clickable:
+				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
+					if obj.highlight():
+						self.highlighted_object = obj
+						break
+					else:
+						log.warning(f'Could not highlight object under cursor! {obj}')
+
+	def click(self, mouse_x: int, mouse_y: int):
+		if self.clicked_object:
+			self.clicked_object.declick()
+
+		self.clicked_object = None
+		for obj in self.drawn_object_list():
+			if isinstance(obj, GUIObject) and obj.is_clickable:
+				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
+					if obj.click():
+						self.clicked_object = obj
+						break
+					else:
+						log.warning(f'Could not click object under cursor! {obj}')
 
 	def select(self, mouse_x: int, mouse_y: int):
 		if self.selected_object:
@@ -72,6 +102,11 @@ class GameManager:
 			pos = self._window_data.get('mouse')
 			if pos:
 				self.select(*pos)
+				self.click(*pos)
+		else:
+			if self.clicked_object:
+				self.clicked_object.declick()
+				self.clicked_object = None
 
 	def game_update(self):
 		self._key_action()

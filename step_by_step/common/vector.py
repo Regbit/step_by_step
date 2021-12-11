@@ -62,7 +62,7 @@ class Vector2f:
 
 	def __mul__(self, other):
 		if isinstance(other, (int, float)):
-			return Vector2f(round(self._x * other), round(self._y * other))
+			return Vector2f(round(self._x * other, 4), round(self._y * other, 4))
 		elif isinstance(other, Vector2f):
 			return self._x * other._x + self._y * other._y
 		else:
@@ -70,7 +70,7 @@ class Vector2f:
 
 	def __truediv__(self, other):
 		if isinstance(other, (int, float)):
-			return Vector2f(round(self._x / other), round(self._y / other))
+			return Vector2f(round(self._x / other, 4), round(self._y / other, 4))
 		else:
 			raise NotImplementedError(f"__truediv__ is not implemented for pair ({type(self)}, {type(other)})")
 
@@ -86,6 +86,7 @@ class Vector2f:
 	def __invert__(self):
 		return Vector2f(-self._x, -self._y)
 
+	@property
 	def copy(self) -> Vector2f:
 		return copy.copy(self)
 
@@ -153,10 +154,47 @@ class Vector3i:
 			y: int,
 			z: int
 	):
-		self.x = x
-		self.y = y
-		self.z = z
+		self._x = x
+		self._y = y
+		self._z = z
 
 	@property
 	def list(self) -> List[int]:
-		return [self.x, self.y, self.z]
+		return [self._x, self._y, self._z]
+
+	def __add__(self, other):
+		if isinstance(other, Vector3i):
+			return Vector3i(self._x + other._x, self._y + other._y, self._z + other._z)
+		elif isinstance(other, (list, tuple)) and len(other) == 3:
+			return Vector3i(self._x + other[0], self._y + other[1], self._z + other[2])
+		else:
+			raise NotImplementedError(f"__add__ is not implemented for pair ({type(self)}, {type(other)})")
+
+	def __iadd__(self, other):
+		return self + other
+
+	def __sub__(self, other):
+		if isinstance(other, Vector3i):
+			return Vector3i(self._x - other._x, self._y - other._y, self._z - other._z)
+		elif isinstance(other, (list, tuple)) and len(other) == 3:
+			return Vector3i(self._x - other[0], self._y - other[1], self._z - other[2])
+		else:
+			raise NotImplementedError(f"__sub__ is not implemented for pair ({type(self)}, {type(other)})")
+
+	def __isub__(self, other):
+		return self - other
+
+	def __mul__(self, other):
+		if isinstance(other, (int, float)):
+			return Vector3i(round(self._x * other), round(self._y * other), round(self._z * other))
+		elif isinstance(other, Vector3i):
+			return self._x * other._x + self._y * other._y + self._z * other._z
+		else:
+			raise NotImplementedError(f"__mul__ is not implemented for pair ({type(self)}, {type(other)})")
+
+	def __copy__(self):
+		return Vector3i(self._x, self._y, self._z)
+
+	@property
+	def copy(self) -> Vector3i:
+		return copy.copy(self)

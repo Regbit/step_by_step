@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import abc
+import copy
 import math
 from typing import List, Tuple, Optional
 
-from step_by_step.graphics.objects.draw_data import DrawData
+from step_by_step.graphics.draw_data import DrawData
 from step_by_step.graphics.objects.settings import DrawMode, BatchGroup
 from step_by_step.common.vector import Vector2f, Vector3i
 
@@ -57,9 +60,9 @@ class _BaseScreenObject(abc.ABC):
 
 	def _update_draw_data(self):
 		self._draw_data = DrawData(
-				batch=self.batch.value,
+				batch=self.batch,
 				count=self._vertex_count,
-				mode=self.mode.value,
+				mode=self.mode,
 				group=None,
 				data=[
 					('v2i', self.vertex_coordinates),
@@ -111,6 +114,22 @@ class ScreenObject(_BaseScreenObject):
 		self.size = size
 		self.color = color
 		self.do_draw = do_draw
+
+	@property
+	def copy(self) -> ScreenObject:
+		return copy.copy(self)
+
+	@property
+	def deepcopy(self) -> ScreenObject:
+		return copy.deepcopy(self)
+
+	@abc.abstractmethod
+	def __copy__(self):
+		raise NotImplementedError()
+
+	@abc.abstractmethod
+	def __deepcopy__(self):
+		raise NotImplementedError()
 
 	@abc.abstractmethod
 	def vertex_coordinates(self) -> List[int]:

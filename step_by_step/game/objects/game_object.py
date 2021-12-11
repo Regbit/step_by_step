@@ -6,7 +6,7 @@ from typing import Optional, List, Tuple
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.settings import NO_BASE_NAME
-from step_by_step.graphics.objects.draw_data import DrawData
+from step_by_step.graphics.draw_data import DrawData
 from step_by_step.graphics.objects.screen_object import ScreenObject
 from step_by_step.graphics.objects.settings import BatchGroup
 
@@ -66,6 +66,14 @@ class DrawnGameObject(GameObject):
 	_main_drawable: ScreenObject = None
 	_foreground_drawable: ScreenObject = None
 
+	def self_destruct_clean_up(self):
+		self.pos = None
+		self.size = None
+		self.orientation_vec = None
+		self._background_drawable = None
+		self._main_drawable = None
+		self._foreground_drawable = None
+
 	def __init__(
 		self,
 		pos: Vector2f,
@@ -86,14 +94,26 @@ class DrawnGameObject(GameObject):
 		self._foreground_drawable = foreground_drawable
 
 	@property
+	def background_drawable(self) -> ScreenObject:
+		return self._background_drawable
+
+	@property
+	def main_drawable(self) -> ScreenObject:
+		return self._main_drawable
+
+	@property
+	def foreground_drawable(self) -> ScreenObject:
+		return self._foreground_drawable
+
+	@property
 	def drawable_list(self) -> List[ScreenObject]:
 		out = []
-		if self._background_drawable:
-			out.append(self._background_drawable)
-		if self._main_drawable:
-			out.append(self._main_drawable)
-		if self._foreground_drawable:
-			out.append(self._foreground_drawable)
+		if self.background_drawable:
+			out.append(self.background_drawable)
+		if self.main_drawable:
+			out.append(self.main_drawable)
+		if self.foreground_drawable:
+			out.append(self.foreground_drawable)
 		return out
 
 	@property
@@ -125,31 +145,27 @@ class DrawnGameObject(GameObject):
 	def screen_data(self) -> Tuple[Vector2f, Vector2f]:
 		return self._main_drawable.screen_data
 
+	@property
+	def batch_group(self) -> BatchGroup:
+		return self._batch_group
+
 	def rotate(self, rad: float):
 		self.orientation_vec.rotate(rad)
 		for drawable in self.drawable_list:
 			drawable.rotate(rad)
 
 	def select(self) -> bool:
-		if self.is_selectable and self._foreground_drawable:
-			self._foreground_drawable.do_draw = True
-			self._foreground_drawable.set_batch(BatchGroup.SELECTED_OBJECT)
+		if self.is_selectable and self.foreground_drawable:
+			self.foreground_drawable.do_draw = True
+			self.foreground_drawable.set_batch(BatchGroup.SELECTED_OBJECT)
 			return True
 		else:
 			return False
 
 	def deselect(self) -> bool:
-		if self.is_selectable and self._foreground_drawable:
-			self._foreground_drawable.do_draw = False
-			self._foreground_drawable.set_batch(None)
+		if self.is_selectable and self.foreground_drawable:
+			self.foreground_drawable.do_draw = False
+			self.foreground_drawable.set_batch(None)
 			return True
 		else:
 			return False
-
-	def self_destruct_clean_up(self):
-		self.pos = None
-		self.size = None
-		self.orientation_vec = None
-		self._background_drawable = None
-		self._main_drawable = None
-		self._foreground_drawable = None

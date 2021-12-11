@@ -42,6 +42,7 @@ class App(Window):
 		self.alive = False
 
 	def on_mouse_motion(self, x, y, dx, dy):
+		self._game_manager.highlight(x, y)
 		self._game_manager.camera_scroll_flag(x, y)
 
 	def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):

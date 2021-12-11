@@ -53,7 +53,7 @@ class WorldObject(DrawnGameObject):
 	def move(self, vec: Union[Vector2f, float]):
 		if isinstance(vec, (int, float)):
 			dist = vec
-			vec = self.orientation_vec.copy()
+			vec = self.orientation_vec.copy
 			vec.set_len(dist)
 		self.pos += vec
 		for drawable in self.drawable_list:

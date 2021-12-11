@@ -27,6 +27,22 @@ class Line(ScreenObject):
 		self.vertex_1 = vertex_1
 		self.vertex_2 = vertex_2
 
+	def __copy__(self):
+		return Line(
+			self.vertex_1,
+			self.vertex_2,
+			self._base_batch,
+			self.shift
+		)
+
+	def __deepcopy__(self):
+		return Line(
+			self.vertex_1.copy,
+			self.vertex_2.copy,
+			self._base_batch,
+			self.shift
+		)
+
 	@property
 	def vertex_coordinates(self) -> List[int]:
 		return [

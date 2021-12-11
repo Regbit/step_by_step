@@ -1,15 +1,16 @@
 from typing import Optional, List, Tuple
 
 from step_by_step.common.vector import Vector2f
+from step_by_step.graphics.objects.settings import BatchGroup, DrawMode
 
 
 class DrawData:
 
 	def __init__(
 			self,
-			batch: str,
+			batch: BatchGroup,
 			count: int,
-			mode: int,
+			mode: DrawMode,
 			group: Optional[str],
 			data: List[Tuple[str, List[int]]]
 	):
@@ -21,7 +22,7 @@ class DrawData:
 
 	@property
 	def batch(self) -> str:
-		return self._batch
+		return self._batch.value
 
 	@property
 	def count(self) -> int:
@@ -29,7 +30,7 @@ class DrawData:
 
 	@property
 	def mode(self) -> int:
-		return self._mode
+		return self._mode.value
 
 	@property
 	def group(self) -> Optional[str]:
@@ -46,10 +47,11 @@ class DrawData:
 			if d[0] == 'v2i':
 				vertex_list = []
 				for i in range(self._count):
+					mul = 0 if self._batch == BatchGroup.GUI_OBJECT else -1
 					vertex_list.extend(
 						[
-							d[1][i*2] - int(camera_pos.x),
-							d[1][i*2+1] - int(camera_pos.y)
+							d[1][i*2] + mul * int(camera_pos.x),
+							d[1][i*2+1] + mul * int(camera_pos.y)
 						]
 					)
 			out.append((d[0], vertex_list))

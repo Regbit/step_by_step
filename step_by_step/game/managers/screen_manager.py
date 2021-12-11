@@ -27,12 +27,12 @@ class ScreenManager:
 		for b in BatchGroup:
 			self.batches[b.value] = Batch()
 
-	def refresh_draw_data(self, world_object_list: List[DrawnGameObject]):
+	def refresh_draw_data(self, drawn_object_list: List[DrawnGameObject]):
 		self._init_batches()
-		for o in world_object_list:
+		for o in drawn_object_list:
 			for v in o.visibility_vertices:
 				cam_pos = self._camera.pos + (self._camera.size / 2)
-				if vertex_in_zone(v.x, v.y, cam_pos, self._camera.size):
+				if o.batch_group == BatchGroup.GUI_OBJECT or vertex_in_zone(v.x, v.y, cam_pos, self._camera.size):
 					for draw_data in o.draw_data:
 						self.batches[draw_data.batch].add(
 							draw_data.count,
@@ -48,7 +48,8 @@ class ScreenManager:
 
 	def check_mouse_over_object(self, mouse_x: int, mouse_y: int, obj: DrawnGameObject) -> bool:
 		pos, size = obj.screen_data
-		return vertex_in_zone(mouse_x, mouse_y, pos - self._camera.pos, size)
+		mul = 0 if obj.batch_group == BatchGroup.GUI_OBJECT else -1
+		return vertex_in_zone(mouse_x, mouse_y, pos + self._camera.pos * mul, size)
 
 	def camera_drag(self, dx: float, dy: float):
 		move_vec = Vector2f(dx, dy)

@@ -27,6 +27,24 @@ class ReverseTriangle(ScreenObject):
 			do_draw=True,
 		)
 
+	def __copy__(self):
+		return ReverseTriangle(
+			self.pos,
+			self.size,
+			self.color,
+			self._base_batch,
+			self.shift
+		)
+
+	def __deepcopy__(self):
+		return ReverseTriangle(
+			self.pos.copy,
+			self.size.copy,
+			self.color.copy,
+			self._base_batch,
+			self.shift.copy
+		)
+
 	@property
 	def vertex_coordinates(self) -> List[int]:
 		return rotate_triangle_coordinates(

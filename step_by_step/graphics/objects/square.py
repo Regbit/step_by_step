@@ -29,6 +29,28 @@ class Square(ScreenObject):
 			do_draw=do_draw,
 		)
 
+	def __copy__(self):
+		return Square(
+			self.pos,
+			self.size,
+			self.color,
+			self._base_batch,
+			self.shift,
+			self.mode,
+			self.do_draw
+		)
+
+	def __deepcopy__(self):
+		return Square(
+			self.pos.copy,
+			self.size.copy,
+			self.color.copy,
+			self._base_batch,
+			self.shift.copy,
+			self.mode,
+			self.do_draw
+		)
+
 	@property
 	def vertex_coordinates(self) -> List[int]:
 		return rotate_quad_coordinates(
@@ -40,6 +62,28 @@ class Square(ScreenObject):
 
 
 class Diamond(Square):
+
+	def __copy__(self):
+		return Diamond(
+			self.pos,
+			self.size,
+			self.color,
+			self._base_batch,
+			self.shift,
+			self.mode,
+			self.do_draw
+		)
+
+	def __deepcopy__(self):
+		return Diamond(
+			self.pos.copy,
+			self.size.copy,
+			self.color.copy,
+			self._base_batch,
+			self.shift.copy,
+			self.mode,
+			self.do_draw
+		)
 
 	@property
 	def vertex_coordinates(self) -> List[int]:
@@ -68,4 +112,20 @@ class SelectionBorder(Square):
 			base_batch=base_batch,
 			mode=DrawMode.LINES,
 			do_draw=False
+		)
+
+	def __copy__(self):
+		return SelectionBorder(
+			self.pos,
+			self.size,
+			self._base_batch,
+			self.shift,
+		)
+
+	def __deepcopy__(self):
+		return SelectionBorder(
+			self.pos.copy,
+			self.size.copy,
+			self._base_batch,
+			self.shift.copy,
 		)
