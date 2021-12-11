@@ -43,16 +43,15 @@ class _BaseGameObject(abc.ABC):
 			log.error(e)
 			return False
 
-	def __str__(self):
-		return f'{self.name}({self.__class__.__name__}) #{self.object_id}'
-
 	@abc.abstractmethod
 	def self_destruct_clean_up(self):
 		raise NotImplementedError()
 
 
 class GameObject(_BaseGameObject):
-	pass
+
+	def __str__(self):
+		return f'{self.name}({self.__class__.__name__}) #{self.object_id}'
 
 
 class WorldObject(GameObject):
@@ -169,7 +168,7 @@ class WorldObject(GameObject):
 		is_movable: bool,
 		movement_velocity: float,
 		rotation_velocity: float,
-		orientation: Vector2f = None,
+		orientation_vec: Vector2f = None,
 		background_drawable: ScreenObject = None,
 		main_drawable: ScreenObject = None,
 		foreground_drawable: ScreenObject = None
@@ -181,7 +180,7 @@ class WorldObject(GameObject):
 		self.is_movable = is_movable
 		self.movement_velocity = movement_velocity
 		self.rotation_velocity = rotation_velocity
-		self.orientation_vec = orientation if orientation else Vector2f(0, 1)
+		self.orientation_vec = orientation_vec if orientation_vec else Vector2f(0, 1)
 		self._background_drawable = background_drawable
 		self._main_drawable = main_drawable
 		self._foreground_drawable = foreground_drawable

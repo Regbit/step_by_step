@@ -26,7 +26,7 @@ class Action(GameObject, _BaseAction):
 		raise NotImplementedError()
 
 	def __str__(self):
-		return f'{self.name} #{self.object_id} ({self.status})'
+		return f'{super(Action, self).__str__()} ({self.status})'
 
 
 class MoveToAction(Action):
@@ -35,7 +35,7 @@ class MoveToAction(Action):
 		self.actor = None
 		self.destination = None
 
-	def __init__(self, actor: 'WorldObject', destination: Union['WorldObject', Vector2f]):
+	def __init__(self, actor: WorldObject, destination: Union[WorldObject, Vector2f]):
 		super(MoveToAction, self).__init__()
 		self.actor = actor
 		self.destination = destination

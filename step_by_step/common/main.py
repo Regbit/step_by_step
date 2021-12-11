@@ -1,10 +1,11 @@
-import pyglet
+from pyglet.window import Window
+from pyglet.gl import glClearColor
 
 from step_by_step.game.managers.game_manager import GameManager
 from step_by_step.game.managers.settings import KeyEvent
 
 
-class App(pyglet.window.Window):
+class App(Window):
 
 	w = 1920
 	h = 1080
@@ -14,7 +15,7 @@ class App(pyglet.window.Window):
 
 	def __init__(self):
 		super().__init__(self.w, self.h, caption='Step by Step')
-		pyglet.gl.glClearColor(0, 0, 0, 1)
+		glClearColor(0, 0, 0, 1)
 		self.alive = True
 		self._game_manager = GameManager(screen_width=self.w, screen_height=self.h)
 

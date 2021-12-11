@@ -1,11 +1,10 @@
 import abc
 from typing import List, Union, Optional
 
+from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.jobs.action import Action, MoveToAction
 from step_by_step.game.objects.jobs.settings import Status, TaskType
-from step_by_step.game.objects.world_object import GameObject
-from step_by_step.common.vector import Vector2f
-from step_by_step.game.objects.world_object import WorldObject
+from step_by_step.game.objects.world_object import GameObject, WorldObject
 
 
 class _BaseTask(abc.ABC):
@@ -30,7 +29,7 @@ class Task(GameObject, _BaseTask):
 	def __str__(self):
 		l1 = len(self.unfinished_actions) if self.unfinished_actions else 0
 		l2 = len(self.finished_actions) if self.finished_actions else 0
-		return f'{self.name} #{self.object_id} ({self.status, l1, l2})'
+		return f'{super(Task, self).__str__()} ({self.status, l1, l2})'
 
 	def self_destruct_clean_up(self):
 		self.finished_actions = None
