@@ -2,7 +2,6 @@ from typing import Dict, Optional, List
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.world_object import GameObject
-from step_by_step.game.objects.path import Waypoint, Trajectory
 from step_by_step.game.objects.unit import Building, ResourceNode, Vehicle
 
 
@@ -13,11 +12,9 @@ class ObjectManager:
 	def __init__(self):
 		self.add_all(
 			[
-				Building(Vector2f(200, 100)),
-				ResourceNode(Vector2f(1000, 1000)),
-				Vehicle(Vector2f(100, 100)),
-				Waypoint(Vector2f(300, 100)),
-				Trajectory(Vector2f(100, 100), Vector2f(300, 100)),
+				Building(world_pos=Vector2f(200, 100)),
+				ResourceNode(world_pos=Vector2f(1000, 1000)),
+				Vehicle(world_pos=Vector2f(100, 100)),
 			]
 		)
 

@@ -5,7 +5,7 @@ import logging
 from typing import Optional, List, Tuple, Union
 
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.objects.settings import NO_BASE_NAME
+from step_by_step.game.objects.settings import NO_BASE_NAME, ALIGN_ANGLE_THRESHOLD
 from step_by_step.graphics.draw_data import DrawData
 from step_by_step.graphics.screen_object import ScreenObject
 from step_by_step.graphics.settings import BatchGroup
@@ -118,7 +118,7 @@ class WorldObject(GameObject):
 	def rotate_towards(self, destination: Vector2f):
 		vec = destination - self.world_pos
 		angle = self.orientation_vec.angle_between(vec)
-		if abs(angle) > 0.001:
+		if abs(angle) > ALIGN_ANGLE_THRESHOLD:
 			mul = 1 if angle > 0 else -1
 			to_rotate = self.rotation_velocity * mul if abs(angle) > self.rotation_velocity else angle
 			self.rotate(to_rotate)
