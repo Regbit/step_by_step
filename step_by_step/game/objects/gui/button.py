@@ -4,9 +4,9 @@ from step_by_step.graphics.objects.settings import BatchGroup
 from step_by_step.graphics.objects.square import Rectangle
 
 
-class Label(GUIObject):
+class Button(GUIObject):
 
-	_base_name = 'Label'
+	_base_name = 'Button'
 	_batch_group = BatchGroup.GUI_OBJECT
 
 	def __init__(
@@ -14,11 +14,11 @@ class Label(GUIObject):
 		pos: Vector2f,
 		size: Vector2f
 	):
-		super(Label, self).__init__(
+		super(Button, self).__init__(
 			pos=pos,
 			size=size,
 			is_selectable=False,
-			is_clickable=False,
+			is_clickable=True,
 			main_drawable=Rectangle(
 				pos=pos,
 				size=size,

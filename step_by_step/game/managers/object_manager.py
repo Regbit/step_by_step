@@ -3,7 +3,7 @@ from typing import Dict, Optional, List
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.game_object import DrawnGameObject
 from step_by_step.game.objects.units import Building, ResourceNode, Vehicle
-from step_by_step.game.objects.gui import Label
+from step_by_step.game.objects.gui import Button
 
 
 class ObjectManager:
@@ -17,7 +17,7 @@ class ObjectManager:
 				Building(pos=Vector2f(200, 100)),
 				ResourceNode(pos=Vector2f(1000, 1000)),
 				Vehicle(pos=Vector2f(100, 100)),
-				Label(pos=Vector2f(1200, 1000))
+				Button(pos=Vector2f(1200, 1000), size=Vector2f(50, 20))
 			]
 		)
 
