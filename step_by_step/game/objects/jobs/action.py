@@ -1,10 +1,9 @@
 import abc
-
 from typing import Union
 
+from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.jobs.settings import Status
 from step_by_step.game.objects.world_object import GameObject, WorldObject
-from step_by_step.common.vector import Vector2f
 
 
 class _BaseAction(abc.ABC):

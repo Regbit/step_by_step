@@ -45,7 +45,7 @@ class MoveToTask(Task):
 
 	_base_name = 'Move To Task'
 
-	def __init__(self, actor: 'WorldObject', destination: Union['WorldObject', Vector2f]):
+	def __init__(self, actor: WorldObject, destination: Union[WorldObject, Vector2f]):
 		self.finished_actions = []
 		self.unfinished_actions = [MoveToAction(actor=actor, destination=destination)]
 		self.current_action = None

@@ -156,6 +156,7 @@ class WorldObject(GameObject):
 	def self_destruct_clean_up(self):
 		self.world_pos = None
 		self.size = None
+		self.orientation_vec = None
 		self._background_drawable = None
 		self._main_drawable = None
 		self._foreground_drawable = None
