@@ -7,7 +7,7 @@ from pyglet.graphics import Batch
 from step_by_step.common.helpers import vertex_in_zone
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.managers.settings import ScreenScrollFlag
-from step_by_step.game.objects.units.world_object import WorldObject
+from step_by_step.game.objects.game_object import DrawnGameObject
 from step_by_step.graphics.camera import Camera
 from step_by_step.graphics.objects.settings import BatchGroup
 
@@ -27,7 +27,7 @@ class ScreenManager:
 		for b in BatchGroup:
 			self.batches[b.value] = Batch()
 
-	def refresh_draw_data(self, world_object_list: List[WorldObject]):
+	def refresh_draw_data(self, world_object_list: List[DrawnGameObject]):
 		self._init_batches()
 		for o in world_object_list:
 			for v in o.visibility_vertices:
@@ -46,7 +46,7 @@ class ScreenManager:
 		for b in reversed(self.batches.values()):
 			b.draw()
 
-	def check_mouse_over_object(self, mouse_x: int, mouse_y: int, obj: WorldObject) -> bool:
+	def check_mouse_over_object(self, mouse_x: int, mouse_y: int, obj: DrawnGameObject) -> bool:
 		pos, size = obj.screen_data
 		return vertex_in_zone(mouse_x, mouse_y, pos - self._camera.pos, size)
 

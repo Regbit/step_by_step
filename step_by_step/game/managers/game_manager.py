@@ -5,7 +5,7 @@ from typing import Optional, Dict, Any, List
 from pyglet.window import key, mouse
 
 from step_by_step.game.managers import KeyEvent, ObjectManager, ScreenManager, JobManager
-from step_by_step.game.objects.units.world_object import WorldObject
+from step_by_step.game.objects.game_object import DrawnGameObject
 
 
 log = logging.getLogger('Game Manager')
@@ -22,22 +22,23 @@ class GameManager:
 	_object_manager: ObjectManager
 	_job_manager: JobManager
 
-	selected_object: Optional[WorldObject] = None
+	highlighted_object: Optional[DrawnGameObject] = None
+	selected_object: Optional[DrawnGameObject] = None
 
 	def __init__(self, screen_width: int, screen_height: int):
 		self._screen_manager = ScreenManager(screen_width, screen_height)
 		self._object_manager = ObjectManager()
 		self._job_manager = JobManager()
 
-	def world_object_list(self) -> List[WorldObject]:
-		return [o for o in self._object_manager.objects_dict.values() if isinstance(o, WorldObject)]
+	def drawn_object_list(self) -> List[DrawnGameObject]:
+		return [o for o in self._object_manager.objects_dict.values() if isinstance(o, DrawnGameObject)]
 
 	def select(self, mouse_x: int, mouse_y: int):
 		if self.selected_object:
 			self.selected_object.deselect()
 
 		self.selected_object = None
-		for obj in self.world_object_list():
+		for obj in self.drawn_object_list():
 			if obj.is_selectable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.select():
@@ -88,7 +89,7 @@ class GameManager:
 			self._screen_manager.camera_scroll_action()
 
 	def refresh_draw_data(self):
-		self._screen_manager.refresh_draw_data(self.world_object_list())
+		self._screen_manager.refresh_draw_data(self.drawn_object_list())
 
 	def draw(self):
 		self._screen_manager.draw()
