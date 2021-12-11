@@ -2,8 +2,8 @@ import abc
 import math
 from typing import List, Tuple, Optional
 
-from step_by_step.graphics.draw_data import DrawData
-from step_by_step.graphics.settings import DrawMode, BatchGroup
+from step_by_step.graphics.objects.draw_data import DrawData
+from step_by_step.graphics.objects.settings import DrawMode, BatchGroup
 from step_by_step.common.vector import Vector2f, Vector3i
 
 

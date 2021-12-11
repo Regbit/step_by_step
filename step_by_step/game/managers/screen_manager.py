@@ -9,7 +9,7 @@ from step_by_step.common.vector import Vector2f
 from step_by_step.game.managers.settings import ScreenScrollFlag
 from step_by_step.game.objects.world_object import WorldObject
 from step_by_step.graphics.camera import Camera
-from step_by_step.graphics.settings import BatchGroup
+from step_by_step.graphics.objects.settings import BatchGroup
 
 
 class ScreenManager:

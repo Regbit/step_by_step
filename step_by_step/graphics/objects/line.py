@@ -1,7 +1,7 @@
 from typing import List
 
-from step_by_step.graphics.screen_object import ScreenObject
-from step_by_step.graphics.settings import BatchGroup, DrawMode
+from step_by_step.graphics.objects.screen_object import ScreenObject
+from step_by_step.graphics.objects.settings import BatchGroup, DrawMode
 from step_by_step.common.vector import Vector2f, Vector3i
 
 

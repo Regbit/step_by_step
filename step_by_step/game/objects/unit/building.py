@@ -1,7 +1,7 @@
 from step_by_step.game.objects.world_object import WorldObject
 from step_by_step.common.vector import Vector2f, Vector3i
-from step_by_step.graphics.square import Square, SelectionBorder
-from step_by_step.graphics.settings import BatchGroup
+from step_by_step.graphics.objects.square import Square, SelectionBorder
+from step_by_step.graphics.objects.settings import BatchGroup
 
 
 class Building(WorldObject):

@@ -6,6 +6,7 @@ from step_by_step.game.objects.unit import Building, ResourceNode, Vehicle
 
 
 class ObjectManager:
+
 	_next_object_id = -1
 	objects_dict: Dict[int, Optional[GameObject]] = dict()
 

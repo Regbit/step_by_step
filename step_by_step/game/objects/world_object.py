@@ -6,9 +6,9 @@ from typing import Optional, List, Tuple, Union
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.settings import NO_BASE_NAME, ALIGN_ANGLE_THRESHOLD
-from step_by_step.graphics.draw_data import DrawData
-from step_by_step.graphics.screen_object import ScreenObject
-from step_by_step.graphics.settings import BatchGroup
+from step_by_step.graphics.objects.draw_data import DrawData
+from step_by_step.graphics.objects.screen_object import ScreenObject
+from step_by_step.graphics.objects.settings import BatchGroup
 
 
 log = logging.getLogger('Game Object')
