@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Set, Union
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.settings import NO_BASE_NAME
@@ -18,7 +18,7 @@ class _BaseGameObject(abc.ABC):
 	_base_name: str = NO_BASE_NAME
 	_name: Optional[str] = None
 	_parent: Optional[_BaseGameObject] = None
-	_children: Optional[List[_BaseGameObject]] = None
+	_children: Optional[Set[_BaseGameObject]] = None
 
 	object_id: int
 
@@ -59,7 +59,7 @@ class DrawnGameObject(GameObject):
 	_base_name = 'Game Object'
 
 	is_selectable: bool
-	pos: Vector2f
+	_pos: Vector2f
 	size: Vector2f
 	orientation_vec: Vector2f
 	_batch_group: BatchGroup = BatchGroup.DEFAULT
@@ -68,7 +68,7 @@ class DrawnGameObject(GameObject):
 	_foreground_drawable: ScreenObject = None
 
 	def self_destruct_clean_up(self):
-		self.pos = None
+		self._pos = None
 		self.size = None
 		self.orientation_vec = None
 		self._background_drawable = None
@@ -86,7 +86,7 @@ class DrawnGameObject(GameObject):
 		foreground_drawable: ScreenObject = None
 	):
 		super(DrawnGameObject, self).__init__()
-		self.pos = pos
+		self._pos = pos
 		self.size = size
 		self.is_selectable = is_selectable
 		self.orientation_vec = orientation_vec if orientation_vec else Vector2f(0, 1)
@@ -109,12 +109,12 @@ class DrawnGameObject(GameObject):
 	@property
 	def drawable_list(self) -> List[ScreenObject]:
 		out = []
-		if self.background_drawable:
-			out.append(self.background_drawable)
-		if self.main_drawable:
-			out.append(self.main_drawable)
-		if self.foreground_drawable:
-			out.append(self.foreground_drawable)
+		if self._background_drawable:
+			out.append(self._background_drawable)
+		if self._main_drawable:
+			out.append(self._main_drawable)
+		if self._foreground_drawable:
+			out.append(self._foreground_drawable)
 		return out
 
 	@property
@@ -128,19 +128,28 @@ class DrawnGameObject(GameObject):
 	@property
 	def visibility_vertices(self) -> List[Vector2f]:
 		return [
-			Vector2f(self.pos.x - self.size.x, self.pos.y - self.size.y),
-			Vector2f(self.pos.x - self.size.x, self.pos.y + self.size.y),
-			Vector2f(self.pos.x + self.size.x, self.pos.y + self.size.y),
-			Vector2f(self.pos.x + self.size.x, self.pos.y - self.size.y),
+			Vector2f(self._pos.x - self.size.x, self._pos.y - self.size.y),
+			Vector2f(self._pos.x - self.size.x, self._pos.y + self.size.y),
+			Vector2f(self._pos.x + self.size.x, self._pos.y + self.size.y),
+			Vector2f(self._pos.x + self.size.x, self._pos.y - self.size.y),
 		]
 
 	@property
+	def pos(self) -> Vector2f:
+		return self._pos
+
+	@pos.setter
+	def pos(self, pos: Vector2f):
+		self._pos = pos
+		self._set_drawable_pos(pos)
+
+	@property
 	def x(self) -> float:
-		return self.pos.x
+		return self._pos.x
 
 	@property
 	def y(self) -> float:
-		return self.pos.y
+		return self._pos.y
 
 	@property
 	def screen_data(self) -> Tuple[Vector2f, Vector2f]:
@@ -150,10 +159,21 @@ class DrawnGameObject(GameObject):
 	def batch_group(self) -> BatchGroup:
 		return self._batch_group
 
+	def _set_drawable_pos(self, pos: Vector2f):
+		for drawable in self.drawable_list:
+			drawable.set_pos(vec=pos)
+
 	def rotate(self, rad: float):
 		self.orientation_vec.rotate(rad)
 		for drawable in self.drawable_list:
 			drawable.rotate(rad)
+
+	def move(self, vec: Union[Vector2f, float]):
+		if isinstance(vec, (int, float)):
+			dist = vec
+			vec = self.orientation_vec.copy
+			vec.set_len(dist)
+		self.pos += vec
 
 	def select(self) -> bool:
 		if self.is_selectable and self.foreground_drawable:

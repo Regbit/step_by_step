@@ -73,13 +73,19 @@ class _BaseScreenObject(abc.ABC):
 	def set_batch(self, new_batch: Optional[BatchGroup]):
 		self._batch = new_batch
 
-	def set_pos(self, x: int, y: int):
+	def set_pos(self, x: int = None, y: int = None, vec: Vector2f = None):
 		if self.pos and isinstance(self.pos, Vector2f):
-			self.pos._x, self.pos._y = x, y
-			self._update_draw_data()
+			if x is not None and y is not None:
+				self.pos._x, self.pos._y = x, y
+				self._update_draw_data()
+			elif vec:
+				self.pos = vec
+				self._update_draw_data()
+			else:
+				raise NotImplementedError(f'Not enough args passed!\n\targs: ({x, y, vec})')
 
 	def move(self, dir_x: int = None, dir_y: int = None, dir_vec: Vector2f = None):
-		if dir_x and dir_y:
+		if dir_x is not None and dir_y is not None:
 			self.pos += (dir_x, dir_y)
 			self._update_draw_data()
 		elif dir_vec:

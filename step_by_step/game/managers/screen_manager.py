@@ -7,6 +7,7 @@ from pyglet.graphics import Batch
 from step_by_step.common.helpers import vertex_in_zone
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.game_object import DrawnGameObject
+from step_by_step.game.objects.gui.gui import GUI
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.graphics.camera import Camera
 from step_by_step.graphics.objects.settings import BatchGroup
@@ -15,14 +16,24 @@ from step_by_step.graphics.objects.settings import BatchGroup
 class ScreenManager:
 
 	_camera: Camera
+	_gui: GUI
 	batches: typing.OrderedDict[str, Batch]
 
 	def __init__(self, screen_width: int, screen_height: int):
+		screen_size = Vector2f(screen_width, screen_height)
+		screen_center = screen_size / 2
+
+		self._gui = GUI(
+			pos=screen_center,
+			size=screen_size,
+		)
+
 		self._camera = Camera(
 			world_pos=Vector2f(0, 0),
-			screen_pos=Vector2f(screen_width / 2 - 200, screen_height / 2),
-			size=Vector2f(screen_width-400, screen_height)
+			screen_pos=screen_center - Vector2f(200, 0),
+			size=screen_size - Vector2f(400, 0)
 		)
+
 		self.batches = collections.OrderedDict()
 		self._init_batches()
 

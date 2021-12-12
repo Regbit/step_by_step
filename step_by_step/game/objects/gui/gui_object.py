@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from typing import List
+
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.game_object import DrawnGameObject
 from step_by_step.graphics.color import Color
@@ -13,6 +17,7 @@ class GUIObject(DrawnGameObject):
 	_text_batch_group = BatchGroup.GUI_TEXT_OBJECT
 
 	is_clickable: bool
+	is_visible: bool
 	_main_drawable_highlighted: ScreenObject
 	_main_drawable_clicked: ScreenObject
 	_label: Label
@@ -29,6 +34,7 @@ class GUIObject(DrawnGameObject):
 		size: Vector2f,
 		is_selectable: bool,
 		is_clickable: bool,
+		is_visible: bool = True,
 		orientation_vec: Vector2f = None,
 		background_drawable: ScreenObject = None,
 		main_drawable: ScreenObject = None,
@@ -45,16 +51,18 @@ class GUIObject(DrawnGameObject):
 			foreground_drawable=foreground_drawable,
 		)
 		self.is_clickable = is_clickable
+		self.is_visible = is_visible
 
-		dif = (Color.WHITE.value - self._main_drawable.color)
+		if main_drawable:
+			dif = (Color.WHITE.value - self._main_drawable.color)
 
-		self._main_drawable_highlighted = main_drawable.copy
-		self._main_drawable_highlighted.do_draw = False
-		self._main_drawable_highlighted.color = self._main_drawable_highlighted.color + dif * 0.2
+			self._main_drawable_highlighted = main_drawable.copy
+			self._main_drawable_highlighted.do_draw = False
+			self._main_drawable_highlighted.color = self._main_drawable_highlighted.color + dif * 0.2
 
-		self._main_drawable_clicked = main_drawable.copy
-		self._main_drawable_clicked.do_draw = False
-		self._main_drawable_clicked.color = self._main_drawable_clicked.color + dif * 0.4
+			self._main_drawable_clicked = main_drawable.copy
+			self._main_drawable_clicked.do_draw = False
+			self._main_drawable_clicked.color = self._main_drawable_clicked.color + dif * 0.4
 
 		self._label = label
 
@@ -68,6 +76,21 @@ class GUIObject(DrawnGameObject):
 			return self._main_drawable
 
 	@property
+	def drawable_list(self) -> List[ScreenObject]:
+		out = []
+		if self._background_drawable:
+			out.append(self._background_drawable)
+		if self._main_drawable:
+			out.append(self._main_drawable)
+		if self._main_drawable_highlighted:
+			out.append(self._main_drawable_highlighted)
+		if self._main_drawable_clicked:
+			out.append(self._main_drawable_clicked)
+		if self._foreground_drawable:
+			out.append(self._foreground_drawable)
+		return out
+
+	@property
 	def text_batch_group(self) -> BatchGroup:
 		return self._text_batch_group
 
@@ -75,12 +98,33 @@ class GUIObject(DrawnGameObject):
 	def label(self) -> Label:
 		return self._label
 
+	def _set_drawable_pos(self, pos: Vector2f):
+		super(GUIObject, self)._set_drawable_pos(pos)
+		self.label.x, self.label.y = pos.tuple
+
 	def highlight(self) -> bool:
 		if self.is_clickable:
 			self._main_drawable_highlighted.do_draw = True
 			return True
 		else:
 			return False
+
+	def unset_parent(self):
+		if self._parent and isinstance(self._parent, GUIObject):
+			self.pos -= self._parent.pos
+
+	def set_parent(self, obj: GUIObject):
+		self.unset_parent()
+		self._parent = obj
+		self.pos += obj.pos
+
+	def remove_child(self, obj: GUIObject):
+		obj.unset_parent()
+		self._children.remove(obj)
+
+	def add_child(self, obj: GUIObject):
+		obj.set_parent(self)
+		self._children.add(obj)
 
 	def dehighlight(self) -> bool:
 		if self.is_clickable:

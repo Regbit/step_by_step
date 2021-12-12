@@ -43,23 +43,14 @@ class WorldObject(DrawnGameObject):
 		self.rotation_velocity = rotation_velocity
 
 	def rotate_towards(self, destination: Vector2f):
-		vec = destination - self.pos
+		vec = destination - self._pos
 		angle = self.orientation_vec.angle_between(vec)
 		if abs(angle) > ALIGN_ANGLE_THRESHOLD:
 			mul = 1 if angle > 0 else -1
 			to_rotate = self.rotation_velocity * mul if abs(angle) > self.rotation_velocity else angle
 			self.rotate(to_rotate)
 
-	def move(self, vec: Union[Vector2f, float]):
-		if isinstance(vec, (int, float)):
-			dist = vec
-			vec = self.orientation_vec.copy
-			vec.set_len(dist)
-		self.pos += vec
-		for drawable in self.drawable_list:
-			drawable.move(dir_vec=vec)
-
 	def move_towards(self, destination: Vector2f):
-		dist = self.pos.dist(destination)
+		dist = self._pos.dist(destination)
 		to_travel = self.movement_velocity if dist > self.movement_velocity else dist
 		self.move(Vector2f(r=to_travel, a=self.orientation_vec.a))

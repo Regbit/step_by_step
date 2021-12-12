@@ -12,15 +12,31 @@ class ObjectManager:
 	objects_dict: Dict[int, Optional[DrawnGameObject]] = dict()
 
 	def __init__(self):
+		self._test_init()
+
+	def _test_init(self):
+		# TODO remove
 		self.add_all(
 			[
 				Building(pos=Vector2f(200, 100)),
 				ResourceNode(pos=Vector2f(1000, 1000)),
 				Vehicle(pos=Vector2f(100, 100)),
-				Button(pos=Vector2f(1920-400/2, 1000), size=Vector2f(350, 50)),
+				Button(pos=Vector2f(0, 400), size=Vector2f(350, 50)),
+				Button(pos=Vector2f(0, 340), size=Vector2f(350, 50)),
+				Button(pos=Vector2f(0, 280), size=Vector2f(350, 50)),
 				Panel(pos=Vector2f(1920-400/2, 1080/2), size=Vector2f(400, 1080)),
 			]
 		)
+
+		p = None
+		for o in self.objects_dict.values():
+			if isinstance(o, Panel):
+				p = o
+				break
+
+		for o in self.objects_dict.values():
+			if isinstance(o, Button):
+				o.set_parent(p)
 
 	def next_object_id(self) -> int:
 		self._next_object_id += 1
