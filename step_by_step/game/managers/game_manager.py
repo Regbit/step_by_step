@@ -19,8 +19,8 @@ class GameManager:
 	_window_data = dict()
 	_frame_rate = 0, time()
 
-	_screen_manager: ScreenManager
 	_object_manager: ObjectManager
+	_screen_manager: ScreenManager
 	_job_manager: JobManager
 
 	highlighted_object: Optional[GUIObject] = None
@@ -28,8 +28,8 @@ class GameManager:
 	selected_object: Optional[DrawnGameObject] = None
 
 	def __init__(self, screen_width: int, screen_height: int):
-		self._screen_manager = ScreenManager(screen_width, screen_height)
 		self._object_manager = ObjectManager()
+		self._screen_manager = ScreenManager(screen_width, screen_height, self._object_manager)
 		self._job_manager = JobManager()
 
 	def drawn_object_list(self) -> List[DrawnGameObject]:

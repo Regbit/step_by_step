@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Set
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.game_object import DrawnGameObject
@@ -18,8 +18,8 @@ class GUIObject(DrawnGameObject):
 
 	is_clickable: bool
 	is_visible: bool
-	_main_drawable_highlighted: ScreenObject
-	_main_drawable_clicked: ScreenObject
+	_main_drawable_highlighted: ScreenObject = None
+	_main_drawable_clicked: ScreenObject = None
 	_label: Label
 
 	def self_destruct_clean_up(self):
@@ -50,6 +50,8 @@ class GUIObject(DrawnGameObject):
 			main_drawable=main_drawable,
 			foreground_drawable=foreground_drawable,
 		)
+		self._children = set()
+
 		self.is_clickable = is_clickable
 		self.is_visible = is_visible
 
@@ -98,9 +100,20 @@ class GUIObject(DrawnGameObject):
 	def label(self) -> Label:
 		return self._label
 
+	@property
+	def all_children(self) -> Set[GUIObject]:
+		out = set()
+		for c in self._children:
+			if isinstance(c, GUIObject):
+				out.add(c)
+				out.update(c.all_children)
+
+		return out
+
 	def _set_drawable_pos(self, pos: Vector2f):
 		super(GUIObject, self)._set_drawable_pos(pos)
-		self.label.x, self.label.y = pos.tuple
+		if self.label:
+			self.label.x, self.label.y = pos.tuple
 
 	def unset_parent(self):
 		if self._parent and isinstance(self._parent, GUIObject):
