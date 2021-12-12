@@ -2,7 +2,7 @@ from step_by_step.common.helpers import vertex_in_zone
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.managers.settings import ScreenScrollFlag
 from step_by_step.game.objects.game_object import DrawnGameObject
-from step_by_step.graphics.objects.settings import BatchGroup
+from step_by_step.game.objects.gui.gui_object import GUIObject
 
 
 class Camera:
@@ -13,7 +13,7 @@ class Camera:
 	_scroll_flags = set()
 	size: Vector2f
 	scroll_speed = 7
-	scroll_border_width = 20
+	scroll_border_width = 15
 
 	def __init__(self, world_pos: Vector2f, screen_pos: Vector2f, size: Vector2f):
 		self._world_pos = world_pos
@@ -79,6 +79,6 @@ class Camera:
 
 	def is_object_in_frame(self, obj: DrawnGameObject) -> bool:
 		for v in obj.visibility_vertices:
-			if obj.batch_group == BatchGroup.GUI_OBJECT or vertex_in_zone(v.x, v.y, self.pos, self.size):
+			if isinstance(obj, GUIObject) or vertex_in_zone(v.x, v.y, self.pos, self.size):
 				return True
 		return False

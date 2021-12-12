@@ -57,7 +57,7 @@ class ScreenManager:
 
 	def check_mouse_over_object(self, mouse_x: int, mouse_y: int, obj: DrawnGameObject) -> bool:
 		pos, size = obj.screen_data
-		mul = 0 if obj.batch_group == BatchGroup.GUI_OBJECT else -1
+		mul = 0 if isinstance(obj, GUIObject) else -1
 		return vertex_in_zone(mouse_x, mouse_y, pos + self._camera.world_pos * mul, size)
 
 	def camera_drag(self, dx: float, dy: float):

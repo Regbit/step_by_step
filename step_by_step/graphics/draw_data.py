@@ -47,7 +47,7 @@ class DrawData:
 			if d[0] == 'v2i':
 				vertex_list = []
 				for i in range(self._count):
-					mul = 0 if self._batch == BatchGroup.GUI_OBJECT else -1
+					mul = 0 if 'GUI' in self._batch.value else -1
 					vertex_list.extend(
 						[
 							d[1][i*2] + mul * int(camera_pos.x),
