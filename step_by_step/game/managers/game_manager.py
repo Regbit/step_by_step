@@ -35,7 +35,7 @@ class GameManager:
 	def drawn_object_list(self) -> List[DrawnGameObject]:
 		return [o for o in self._object_manager.objects_dict.values() if isinstance(o, DrawnGameObject)]
 
-	def highlight(self, mouse_x: int, mouse_y: int):
+	def highlight(self, mouse_x: int, mouse_y: int) -> bool:
 		if self.highlighted_object:
 			self.highlighted_object.dehighlight()
 
@@ -45,11 +45,12 @@ class GameManager:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.highlight():
 						self.highlighted_object = obj
-						break
+						return True
 					else:
 						log.warning(f'Could not highlight object under cursor! {obj}')
+		return False
 
-	def click(self, mouse_x: int, mouse_y: int):
+	def click(self, mouse_x: int, mouse_y: int) -> bool:
 		if self.clicked_object:
 			self.clicked_object.declick()
 
@@ -59,11 +60,12 @@ class GameManager:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.click():
 						self.clicked_object = obj
-						break
+						return True
 					else:
 						log.warning(f'Could not click object under cursor! {obj}')
+		return False
 
-	def select(self, mouse_x: int, mouse_y: int):
+	def select(self, mouse_x: int, mouse_y: int) -> bool:
 		if self.selected_object:
 			self.selected_object.deselect()
 
@@ -73,9 +75,10 @@ class GameManager:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.select():
 						self.selected_object = obj
-						break
+						return True
 					else:
 						log.warning(f'Could not select object under cursor! {obj}')
+		return False
 
 	def delete_selected_object(self) -> bool:
 		if self.selected_object:
@@ -101,8 +104,9 @@ class GameManager:
 		if mouse.LEFT in self._pressed_keys:
 			pos = self._window_data.get('mouse')
 			if pos:
-				self.select(*pos)
-				self.click(*pos)
+				res = self.click(*pos)
+				if not res:
+					res = self.select(*pos)
 		else:
 			if self.clicked_object:
 				self.clicked_object.declick()
