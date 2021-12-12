@@ -2,14 +2,23 @@ import collections
 import typing
 from typing import List
 
+from pyglet import font
 from pyglet.graphics import Batch
 
 from step_by_step.common.helpers import vertex_in_zone
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.managers.settings import ScreenScrollFlag
 from step_by_step.game.objects.game_object import DrawnGameObject
+from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.graphics.camera import Camera
 from step_by_step.graphics.objects.settings import BatchGroup
+
+
+from pathlib import Path
+
+path = Path(__file__).parent.parent.parent.absolute().joinpath('resources/fonts/')
+font.add_directory(Path.joinpath(path))
+oswald = font.load('Oswald')
 
 
 class ScreenManager:
@@ -40,6 +49,8 @@ class ScreenManager:
 							draw_data.group,
 							*draw_data.shifted_draw_data(self._camera.pos)
 						)
+					if isinstance(o, GUIObject):
+						o.label.batch = self.batches[o.text_batch_group.value]
 					break
 
 	def draw(self):

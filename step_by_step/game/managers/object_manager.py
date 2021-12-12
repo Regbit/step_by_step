@@ -17,7 +17,7 @@ class ObjectManager:
 				Building(pos=Vector2f(200, 100)),
 				ResourceNode(pos=Vector2f(1000, 1000)),
 				Vehicle(pos=Vector2f(100, 100)),
-				Button(pos=Vector2f(1200, 1000), size=Vector2f(50, 20))
+				Button(pos=Vector2f(1200, 1000), size=Vector2f(100, 30))
 			]
 		)
 
