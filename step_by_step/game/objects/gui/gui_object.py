@@ -102,13 +102,6 @@ class GUIObject(DrawnGameObject):
 		super(GUIObject, self)._set_drawable_pos(pos)
 		self.label.x, self.label.y = pos.tuple
 
-	def highlight(self) -> bool:
-		if self.is_clickable:
-			self._main_drawable_highlighted.do_draw = True
-			return True
-		else:
-			return False
-
 	def unset_parent(self):
 		if self._parent and isinstance(self._parent, GUIObject):
 			self.pos -= self._parent.pos
@@ -125,6 +118,13 @@ class GUIObject(DrawnGameObject):
 	def add_child(self, obj: GUIObject):
 		obj.set_parent(self)
 		self._children.add(obj)
+
+	def highlight(self) -> bool:
+		if self.is_clickable:
+			self._main_drawable_highlighted.do_draw = True
+			return True
+		else:
+			return False
 
 	def dehighlight(self) -> bool:
 		if self.is_clickable:
