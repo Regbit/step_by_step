@@ -1,6 +1,7 @@
 import collections
 import typing
 from typing import List
+from pathlib import Path
 
 from pyglet import font
 from pyglet.graphics import Batch
@@ -14,8 +15,6 @@ from step_by_step.graphics.camera import Camera
 from step_by_step.graphics.objects.settings import BatchGroup
 
 
-from pathlib import Path
-
 path = Path(__file__).parent.parent.parent.absolute().joinpath('resources/fonts/')
 font.add_directory(Path.joinpath(path))
 oswald = font.load('Oswald')
@@ -28,7 +27,11 @@ class ScreenManager:
 	batches: typing.OrderedDict[str, Batch]
 
 	def __init__(self, screen_width: int, screen_height: int):
-		self._camera = Camera(Vector2f(0, 0), Vector2f(screen_width, screen_height))
+		self._camera = Camera(
+			world_pos=Vector2f(0, 0),
+			screen_pos=Vector2f(screen_width / 2 - 200, screen_height / 2),
+			size=Vector2f(screen_width-400, screen_height)
+		)
 		self.batches = collections.OrderedDict()
 		self._init_batches()
 
@@ -39,19 +42,16 @@ class ScreenManager:
 	def refresh_draw_data(self, drawn_object_list: List[DrawnGameObject]):
 		self._init_batches()
 		for o in drawn_object_list:
-			for v in o.visibility_vertices:
-				cam_pos = self._camera.pos + (self._camera.size / 2)
-				if o.batch_group == BatchGroup.GUI_OBJECT or vertex_in_zone(v.x, v.y, cam_pos, self._camera.size):
-					for draw_data in o.draw_data:
-						self.batches[draw_data.batch].add(
-							draw_data.count,
-							draw_data.mode,
-							draw_data.group,
-							*draw_data.shifted_draw_data(self._camera.pos)
-						)
-					if isinstance(o, GUIObject):
-						o.label.batch = self.batches[o.text_batch_group.value]
-					break
+			if self._camera.is_object_in_frame(o):
+				for draw_data in o.draw_data:
+					self.batches[draw_data.batch].add(
+						draw_data.count,
+						draw_data.mode,
+						draw_data.group,
+						*draw_data.shifted_draw_data(self._camera.world_pos)
+					)
+				if isinstance(o, GUIObject) and o.label:
+					o.label.batch = self.batches[o.text_batch_group.value]
 
 	def draw(self):
 		for b in reversed(self.batches.values()):
@@ -60,11 +60,11 @@ class ScreenManager:
 	def check_mouse_over_object(self, mouse_x: int, mouse_y: int, obj: DrawnGameObject) -> bool:
 		pos, size = obj.screen_data
 		mul = 0 if obj.batch_group == BatchGroup.GUI_OBJECT else -1
-		return vertex_in_zone(mouse_x, mouse_y, pos + self._camera.pos * mul, size)
+		return vertex_in_zone(mouse_x, mouse_y, pos + self._camera.world_pos * mul, size)
 
 	def camera_drag(self, dx: float, dy: float):
 		move_vec = Vector2f(dx, dy)
-		self._camera.move(move_vec)
+		self._camera.scroll(move_vec)
 
 	def camera_scroll_flag(self, x: int, y: int):
 		self._scroll_flags = set()
@@ -91,4 +91,4 @@ class ScreenManager:
 		elif ScreenScrollFlag.UP in self._scroll_flags:
 			move_vec += (0, self._camera.scroll_speed)
 
-		self._camera.move(move_vec)
+		self._camera.scroll(move_vec)

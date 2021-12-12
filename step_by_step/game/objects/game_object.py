@@ -17,9 +17,10 @@ class _BaseGameObject(abc.ABC):
 
 	_base_name: str = NO_BASE_NAME
 	_name: Optional[str] = None
+	_parent: Optional[_BaseGameObject] = None
+	_children: Optional[List[_BaseGameObject]] = None
+
 	object_id: int
-	parent: Optional[_BaseGameObject] = None
-	children: Optional[List[_BaseGameObject]] = None
 
 	@property
 	def name(self) -> str:
@@ -31,10 +32,10 @@ class _BaseGameObject(abc.ABC):
 
 	def self_destruct(self) -> bool:
 		try:
-			if self.parent:
-				self.parent = None
-			if self.children:
-				self.children = None
+			if self._parent:
+				self._parent = None
+			if self._children:
+				self._children = None
 			self.self_destruct_clean_up()
 			del self
 			return True
