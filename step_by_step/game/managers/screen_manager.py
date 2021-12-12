@@ -8,7 +8,6 @@ from pyglet.graphics import Batch
 
 from step_by_step.common.helpers import vertex_in_zone
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.managers.settings import ScreenScrollFlag
 from step_by_step.game.objects.game_object import DrawnGameObject
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.graphics.camera import Camera
@@ -23,7 +22,6 @@ oswald = font.load('Oswald')
 class ScreenManager:
 
 	_camera: Camera
-	_scroll_flags = set()
 	batches: typing.OrderedDict[str, Batch]
 
 	def __init__(self, screen_width: int, screen_height: int):
@@ -67,28 +65,7 @@ class ScreenManager:
 		self._camera.scroll(move_vec)
 
 	def camera_scroll_flag(self, x: int, y: int):
-		self._scroll_flags = set()
-		if x <= self._camera.scroll_border_width:
-			self._scroll_flags.add(ScreenScrollFlag.LEFT)
-		elif x >= self._camera.size.x - self._camera.scroll_border_width:
-			self._scroll_flags.add(ScreenScrollFlag.RIGHT)
-
-		if y <= self._camera.scroll_border_width:
-			self._scroll_flags.add(ScreenScrollFlag.DOWN)
-		elif y >= self._camera.size.y - self._camera.scroll_border_width:
-			self._scroll_flags.add(ScreenScrollFlag.UP)
+		self._camera.scroll_flag(x, y)
 
 	def camera_scroll_action(self):
-		move_vec = Vector2f(0, 0)
-
-		if ScreenScrollFlag.LEFT in self._scroll_flags:
-			move_vec -= (self._camera.scroll_speed, 0)
-		elif ScreenScrollFlag.RIGHT in self._scroll_flags:
-			move_vec += (self._camera.scroll_speed, 0)
-
-		if ScreenScrollFlag.DOWN in self._scroll_flags:
-			move_vec -= (0, self._camera.scroll_speed)
-		elif ScreenScrollFlag.UP in self._scroll_flags:
-			move_vec += (0, self._camera.scroll_speed)
-
-		self._camera.scroll(move_vec)
+		self._camera.scroll_action()
