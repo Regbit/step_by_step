@@ -116,9 +116,9 @@ class GameManager:
 		self._key_action()
 		self._camera_scroll_action()
 
-	def camera_drag(self, dx: float, dy: float):
+	def camera_drag(self, x: int, y: int, dx: float, dy: float):
 		if mouse.MIDDLE in self._pressed_keys:
-			self._screen_manager.camera_drag(dx, dy)
+			self._screen_manager.camera_drag(x, y, dx, dy)
 
 	def camera_scroll_flag(self, x: int, y: int):
 		self._screen_manager.camera_scroll_flag(x, y)

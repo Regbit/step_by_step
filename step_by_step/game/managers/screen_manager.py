@@ -53,9 +53,10 @@ class ScreenManager:
 		mul = 0 if isinstance(obj, GUIObject) else -1
 		return vertex_in_zone(mouse_x, mouse_y, pos + self._camera.world_pos * mul, size)
 
-	def camera_drag(self, dx: float, dy: float):
-		move_vec = Vector2f(dx, dy)
-		self._camera.scroll(move_vec)
+	def camera_drag(self, x: int, y: int, dx: float, dy: float):
+		if vertex_in_zone(x, y, self._camera.screen_pos, self._camera.size):
+			move_vec = Vector2f(dx, dy)
+			self._camera.scroll(move_vec)
 
 	def camera_scroll_flag(self, x: int, y: int):
 		self._camera.scroll_flag(x, y)

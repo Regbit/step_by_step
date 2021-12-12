@@ -46,7 +46,7 @@ class App(Window):
 		self._game_manager.camera_scroll_flag(x, y)
 
 	def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
-		self._game_manager.camera_drag(-dx, -dy)
+		self._game_manager.camera_drag(x, y, -dx, -dy)
 
 	def on_mouse_press(self, x, y, button, modifiers):
 		self._game_manager.key_update(button, KeyEvent.PRESSED, {'mouse': (x, y)})
