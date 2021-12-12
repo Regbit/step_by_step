@@ -45,15 +45,16 @@ class Camera:
 
 	def scroll_flag(self, x: int, y: int):
 		self._scroll_flags = set()
-		if self.screen_pos.x - self.size.x / 2 <= x <= self.scroll_border_width:
-			self._scroll_flags.add(ScreenScrollFlag.LEFT)
-		elif self.screen_pos.x + self.size.x / 2 >= x >= self.size.x - self.scroll_border_width:
-			self._scroll_flags.add(ScreenScrollFlag.RIGHT)
+		if vertex_in_zone(x, y, self.screen_pos, self.size):
+			if self.screen_pos.x - self.size.x / 2 <= x <= self.scroll_border_width:
+				self._scroll_flags.add(ScreenScrollFlag.LEFT)
+			elif self.screen_pos.x + self.size.x / 2 >= x >= self.size.x - self.scroll_border_width:
+				self._scroll_flags.add(ScreenScrollFlag.RIGHT)
 
-		if self.screen_pos.y - self.size.y / 2 <= y <= self.scroll_border_width:
-			self._scroll_flags.add(ScreenScrollFlag.DOWN)
-		elif self.screen_pos.y + self.size.y / 2 >= y >= self.size.y - self.scroll_border_width:
-			self._scroll_flags.add(ScreenScrollFlag.UP)
+			if self.screen_pos.y - self.size.y / 2 <= y <= self.scroll_border_width:
+				self._scroll_flags.add(ScreenScrollFlag.DOWN)
+			elif self.screen_pos.y + self.size.y / 2 >= y >= self.size.y - self.scroll_border_width:
+				self._scroll_flags.add(ScreenScrollFlag.UP)
 
 	def scroll_action(self):
 		move_vec = Vector2f(0, 0)
