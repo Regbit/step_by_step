@@ -1,6 +1,14 @@
+from pathlib import Path
+
+from pyglet import font
 from pyglet.text import Label as _Label
 
 from step_by_step.common.vector import Vector3i, Vector2f
+
+
+path = Path(__file__).parent.parent.absolute().joinpath('resources/fonts/')
+font.add_directory(Path.joinpath(path))
+oswald = font.load('Oswald')
 
 
 class Label(_Label):
@@ -10,7 +18,7 @@ class Label(_Label):
 			pos: Vector2f,
 			size: Vector2f,
 			text: str = '',
-			font_name: str = 'Oswald',
+			font_name: str = 'Oswald Light',
 			font_size: int = 10,
 			bold: bool = False,
 			italic: bool = False,
