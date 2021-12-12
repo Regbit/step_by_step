@@ -28,7 +28,7 @@ class Button(GUIObject):
 				pos=pos,
 				size=size,
 				text='Button',
-				font_size=14,
+				font_size=20,
 				color=Vector3i(30, 20, 90),
 			)
 		)
