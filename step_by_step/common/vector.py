@@ -192,6 +192,12 @@ class Vector3i:
 		else:
 			raise NotImplementedError(f"__mul__ is not implemented for pair ({type(self)}, {type(other)})")
 
+	def __truediv__(self, other):
+		if isinstance(other, (int, float)):
+			return Vector3i(round(self._x / other), round(self._y / other), round(self._z / other))
+		else:
+			raise NotImplementedError(f"__truediv__ is not implemented for pair ({type(self)}, {type(other)})")
+
 	def __copy__(self):
 		return Vector3i(self._x, self._y, self._z)
 

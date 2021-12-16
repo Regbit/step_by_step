@@ -12,7 +12,8 @@ class Panel(GUIObject):
 	def __init__(
 		self,
 		pos: Vector2f,
-		size: Vector2f
+		size: Vector2f,
+		color: Vector3i
 	):
 		super(Panel, self).__init__(
 			pos=pos,
@@ -22,7 +23,7 @@ class Panel(GUIObject):
 			main_drawable=Rectangle(
 				pos=pos,
 				size=size,
-				color=Vector3i(5, 5, 18),
+				color=color,
 				base_batch=self._batch_group
 			)
 		)

@@ -2,9 +2,8 @@ from typing import Dict, Optional, Set
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.game_object import DrawnGameObject
-from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.game.objects.units import Building, ResourceNode, Vehicle
-from step_by_step.game.objects.gui import Button, Panel
+from step_by_step.game.objects.gui.gui_object import GUIObject
 
 
 class ObjectManager:
@@ -24,16 +23,6 @@ class ObjectManager:
 				Vehicle(pos=Vector2f(100, 100))
 			}
 		)
-
-		p = None
-		for o in self.objects_dict.values():
-			if isinstance(o, Panel):
-				p = o
-				break
-
-		for o in self.objects_dict.values():
-			if isinstance(o, Button):
-				o.set_parent(p)
 
 	def next_object_id(self) -> int:
 		self._next_object_id += 1

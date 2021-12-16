@@ -5,7 +5,7 @@ from typing import List, Set
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.game_object import DrawnGameObject
 from step_by_step.graphics.color import Color
-from step_by_step.graphics.label import Label
+from step_by_step.graphics.label_extension import LabelExtension
 from step_by_step.graphics.objects.screen_object import ScreenObject
 from step_by_step.graphics.objects.settings import BatchGroup
 
@@ -17,10 +17,10 @@ class GUIObject(DrawnGameObject):
 	_text_batch_group = BatchGroup.GUI_TEXT_OBJECT
 
 	is_clickable: bool
-	is_visible: bool
+	_is_visible: bool
 	_main_drawable_highlighted: ScreenObject = None
 	_main_drawable_clicked: ScreenObject = None
-	_label: Label
+	_label: LabelExtension
 
 	def self_destruct_clean_up(self):
 		super(GUIObject, self).self_destruct_clean_up()
@@ -39,7 +39,7 @@ class GUIObject(DrawnGameObject):
 		background_drawable: ScreenObject = None,
 		main_drawable: ScreenObject = None,
 		foreground_drawable: ScreenObject = None,
-		label: Label = None,
+		label: LabelExtension = None,
 	):
 		super(GUIObject, self).__init__(
 			pos=pos,
@@ -53,7 +53,7 @@ class GUIObject(DrawnGameObject):
 		self._children = set()
 
 		self.is_clickable = is_clickable
-		self.is_visible = is_visible
+		self._is_visible = is_visible
 
 		if main_drawable:
 			dif = (Color.WHITE.value - self._main_drawable.color)
@@ -97,7 +97,7 @@ class GUIObject(DrawnGameObject):
 		return self._text_batch_group
 
 	@property
-	def label(self) -> Label:
+	def label(self) -> LabelExtension:
 		return self._label
 
 	@property
@@ -131,6 +131,20 @@ class GUIObject(DrawnGameObject):
 	def add_child(self, obj: GUIObject):
 		obj.set_parent(self)
 		self._children.add(obj)
+
+	def add_children(self, obj_list: List[GUIObject]):
+		for o in obj_list:
+			self.add_child(o)
+
+	@property
+	def is_visible(self) -> bool:
+		return self._is_visible
+
+	@is_visible.setter
+	def is_visible(self, is_visible: bool):
+		self._is_visible = is_visible
+		for ch in self._children:
+			ch.is_visible = is_visible
 
 	def highlight(self) -> bool:
 		if self.is_clickable:

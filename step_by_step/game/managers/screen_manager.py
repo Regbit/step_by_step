@@ -6,9 +6,7 @@ from pyglet.graphics import Batch
 
 from step_by_step.common.helpers import vertex_in_zone
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.managers import ObjectManager
 from step_by_step.game.objects.game_object import DrawnGameObject
-from step_by_step.game.objects.gui.gui import GUI
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.graphics.camera import Camera
 from step_by_step.graphics.objects.settings import BatchGroup
@@ -17,25 +15,18 @@ from step_by_step.graphics.objects.settings import BatchGroup
 class ScreenManager:
 
 	_camera: Camera
-	_gui: GUI
 	batches: typing.OrderedDict[str, Batch]
 	screen_size: Vector2f
 	screen_center: Vector2f
 
-	def __init__(self, screen_width: int, screen_height: int, object_manager: ObjectManager):
+	def __init__(self, screen_width: int, screen_height: int):
 		self.screen_size = Vector2f(screen_width, screen_height)
 		self.screen_center = self.screen_size / 2
 
-		self._gui = GUI(
-			pos=self.screen_center,
-			size=self.screen_size,
-		)
-		object_manager.add(self._gui)
-
 		self._camera = Camera(
 			world_pos=Vector2f(0, 0),
-			screen_pos=self.screen_center - Vector2f(200, 0),
-			size=self.screen_size - Vector2f(400, 0)
+			screen_pos=self.screen_center,
+			size=self.screen_size
 		)
 
 		self.batches = collections.OrderedDict()
@@ -78,3 +69,7 @@ class ScreenManager:
 
 	def camera_scroll_action(self):
 		self._camera.scroll_action()
+
+	def camera_shift(self, pos: Vector2f, size: Vector2f):
+		self._camera.screen_pos = self.screen_center - pos
+		self._camera.size = self.screen_size - size

@@ -7,6 +7,8 @@ from pyglet.window import key, mouse
 from step_by_step.game.managers import KeyEvent, ObjectManager, ScreenManager, JobManager
 from step_by_step.game.objects.game_object import DrawnGameObject
 from step_by_step.game.objects.gui.gui_object import GUIObject
+from step_by_step.game.objects.gui.gui import MainGameGUI
+from step_by_step.game.objects.gui.settings import GUIStyle
 
 
 log = logging.getLogger('Game Manager')
@@ -16,6 +18,7 @@ class GameManager:
 
 	_print_info = False
 	_pressed_keys = set()
+	_pressed_keys_previous = set()
 	_window_data = dict()
 	_frame_rate = 0, time()
 
@@ -23,14 +26,24 @@ class GameManager:
 	_screen_manager: ScreenManager
 	_job_manager: JobManager
 
+	_gui: MainGameGUI
+
 	highlighted_object: Optional[GUIObject] = None
 	clicked_object: Optional[GUIObject] = None
 	selected_object: Optional[DrawnGameObject] = None
 
 	def __init__(self, screen_width: int, screen_height: int):
 		self._object_manager = ObjectManager()
-		self._screen_manager = ScreenManager(screen_width, screen_height, self._object_manager)
+		self._screen_manager = ScreenManager(screen_width, screen_height)
 		self._job_manager = JobManager()
+
+		self._gui = MainGameGUI(
+			pos=self._screen_manager.screen_center,
+			size=self._screen_manager.screen_size,
+			gui_style=GUIStyle.BLUE
+		)
+		self._object_manager.add(self._gui)
+		self._screen_manager.camera_shift(self._gui.camera_pos_shift, self._gui.camera_size_shift)
 
 	def drawn_object_list(self) -> List[DrawnGameObject]:
 		return [o for o in self._object_manager.objects_dict.values() if isinstance(o, DrawnGameObject)]
@@ -41,7 +54,7 @@ class GameManager:
 
 		self.highlighted_object = None
 		for obj in self.drawn_object_list():
-			if isinstance(obj, GUIObject) and obj.is_clickable:
+			if isinstance(obj, GUIObject) and obj.is_visible and obj.is_clickable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.highlight():
 						self.highlighted_object = obj
@@ -56,7 +69,7 @@ class GameManager:
 
 		self.clicked_object = None
 		for obj in self.drawn_object_list():
-			if isinstance(obj, GUIObject) and obj.is_clickable:
+			if isinstance(obj, GUIObject) and obj.is_visible and obj.is_clickable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.click():
 						self.clicked_object = obj
@@ -97,8 +110,9 @@ class GameManager:
 			self._window_data.update(data)
 
 	def _key_action(self):
-		if key.SPACE in self._pressed_keys:
+		if key.SPACE in self._pressed_keys and key.SPACE not in self._pressed_keys_previous:
 			self._print_info = not self._print_info
+			self._hide_right_menu()
 		if key.DELETE in self._pressed_keys:
 			self.delete_selected_object()
 		if mouse.LEFT in self._pressed_keys:
@@ -111,6 +125,12 @@ class GameManager:
 			if self.clicked_object:
 				self.clicked_object.declick()
 				self.clicked_object = None
+
+		self._pressed_keys_previous = self._pressed_keys.copy()
+
+	def _hide_right_menu(self):
+		self._gui.is_visible = not self._gui.is_visible
+		self._screen_manager.camera_shift(self._gui.camera_pos_shift, self._gui.camera_size_shift)
 
 	def game_update(self):
 		self._key_action()
@@ -135,7 +155,7 @@ class GameManager:
 
 	def post_code(self):
 		if time() - self._frame_rate[1] > 1:
-			if self._print_info:
+			if self._print_info and False:
 				print('-' * 25)
 				print('[FPS]:', self._frame_rate)
 				print('[Selected object]:', self.selected_object)

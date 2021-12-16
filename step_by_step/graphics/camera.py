@@ -80,6 +80,8 @@ class Camera:
 
 	def is_object_in_frame(self, obj: DrawnGameObject) -> bool:
 		for v in obj.visibility_vertices:
-			if isinstance(obj, GUIObject) or vertex_in_zone(v.x, v.y, self.pos, self.size):
+			if isinstance(obj, GUIObject):
+				return obj.is_visible
+			if vertex_in_zone(v.x, v.y, self.pos, self.size):
 				return True
 		return False
