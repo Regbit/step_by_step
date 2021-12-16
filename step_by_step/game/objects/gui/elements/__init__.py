@@ -1,3 +1,3 @@
-from .label import Label
-from .button import Button
-from .panel import Panel
+from ._label import Label
+from ._button import Button
+from ._panel import Panel

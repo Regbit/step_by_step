@@ -9,11 +9,32 @@ class GUI(GUIObject):
 
 	_base_name = 'GUI'
 	_batch_group = BatchGroup.GUI_OBJECT_BACKGROUND
+
+	def __init__(
+		self,
+		pos: Vector2f,
+		size: Vector2f,
+		gui_style: GUIStyle
+	):
+		super(GUI, self).__init__(
+			pos=pos,
+			size=size,
+			is_selectable=False,
+			is_clickable=False,
+			is_visible=True
+		)
+		self.gui_style = gui_style
+
+
+class ViewportGUI(GUIObject):
+
+	_base_name = 'Viewport GUI'
+	_batch_group = BatchGroup.GUI_OBJECT_BACKGROUND
 	_camera_pos_shift: Vector2f = None
-	_camera_size_shift = None
+	_camera_size_shift: Vector2f = None
 
 	def self_destruct_clean_up(self):
-		super(GUI, self).self_destruct_clean_up()
+		super(ViewportGUI, self).self_destruct_clean_up()
 		self._camera_pos_shift = None
 		self._camera_size_shift = None
 
@@ -23,7 +44,7 @@ class GUI(GUIObject):
 		size: Vector2f,
 		gui_style: GUIStyle
 	):
-		super(GUI, self).__init__(
+		super(ViewportGUI, self).__init__(
 			pos=pos,
 			size=size,
 			is_selectable=False,
@@ -51,7 +72,7 @@ class GUI(GUIObject):
 		self._camera_size_shift = vec
 
 
-class MainGameGUI(GUI):
+class MainGameGUI(ViewportGUI):
 
 	_base_name = 'Main Game GUI'
 
@@ -77,4 +98,3 @@ class MainGameGUI(GUI):
 
 		self.camera_pos_shift += Vector2f(RIGHT_MENU_BAR_WIDTH / 2, 0)
 		self.camera_size_shift += Vector2f(RIGHT_MENU_BAR_WIDTH, 0)
-
