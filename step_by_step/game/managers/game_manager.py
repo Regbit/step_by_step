@@ -112,7 +112,7 @@ class GameManager:
 	def _key_action(self):
 		if key.SPACE in self._pressed_keys and key.SPACE not in self._pressed_keys_previous:
 			self._print_info = not self._print_info
-			self._hide_right_menu()
+			self._switch_hide_right_menu()
 		if key.DELETE in self._pressed_keys:
 			self.delete_selected_object()
 		if mouse.LEFT in self._pressed_keys:
@@ -128,8 +128,8 @@ class GameManager:
 
 		self._pressed_keys_previous = self._pressed_keys.copy()
 
-	def _hide_right_menu(self):
-		self._gui.is_visible = not self._gui.is_visible
+	def _switch_hide_right_menu(self):
+		self._gui.switch_hide_right_menu()
 		self._screen_manager.camera_shift(self._gui.camera_pos_shift, self._gui.camera_size_shift)
 
 	def game_update(self):

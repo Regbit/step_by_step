@@ -1,7 +1,7 @@
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.objects.gui.menu import RightMenu
+from step_by_step.game.objects.gui.menu import RightMenu, UpperBarMenu
 from step_by_step.game.objects.gui.gui_object import GUIObject
-from step_by_step.game.objects.gui.settings import RIGHT_MENU_BAR_WIDTH, GUIStyle
+from step_by_step.game.objects.gui.settings import GUIStyle, UPPER_BAR_MENU_HEIGHT, RIGHT_MENU_WIDTH
 from step_by_step.graphics.objects.settings import BatchGroup
 
 
@@ -26,10 +26,9 @@ class GUI(GUIObject):
 		self.gui_style = gui_style
 
 
-class ViewportGUI(GUIObject):
+class ViewportGUI(GUI):
 
 	_base_name = 'Viewport GUI'
-	_batch_group = BatchGroup.GUI_OBJECT_BACKGROUND
 	_camera_pos_shift: Vector2f = None
 	_camera_size_shift: Vector2f = None
 
@@ -47,11 +46,8 @@ class ViewportGUI(GUIObject):
 		super(ViewportGUI, self).__init__(
 			pos=pos,
 			size=size,
-			is_selectable=False,
-			is_clickable=False,
-			is_visible=True
+			gui_style=gui_style
 		)
-		self.gui_style = gui_style
 		self._camera_pos_shift = Vector2f(0, 0)
 		self._camera_size_shift = Vector2f(0, 0)
 
@@ -75,6 +71,13 @@ class ViewportGUI(GUIObject):
 class MainGameGUI(ViewportGUI):
 
 	_base_name = 'Main Game GUI'
+	_upper_bar_menu: UpperBarMenu = None
+	_right_menu: RightMenu = None
+
+	def self_destruct_clean_up(self):
+		super(ViewportGUI, self).self_destruct_clean_up()
+		self._upper_bar_menu = None
+		self._right_menu = None
 
 	def __init__(
 		self,
@@ -87,14 +90,28 @@ class MainGameGUI(ViewportGUI):
 			size=size,
 			gui_style=gui_style
 		)
+		self._init_upper_bar_menu()
+		self._init_right_menu()
 
-		right_menu = RightMenu(
-			pos=Vector2f(self.pos.x * 2 - RIGHT_MENU_BAR_WIDTH / 2, self.pos.y),
-			size=Vector2f(RIGHT_MENU_BAR_WIDTH, self.size.y),
-			gui_style=gui_style
+	def _init_upper_bar_menu(self):
+		self._upper_bar_menu = UpperBarMenu(
+			pos=Vector2f(self.pos.x, self.pos.y * 2 - UPPER_BAR_MENU_HEIGHT / 2),
+			size=Vector2f(self.size.x, UPPER_BAR_MENU_HEIGHT),
+			gui_style=self.gui_style
 		)
+		self.add_child(self._upper_bar_menu)
+		self.camera_pos_shift += Vector2f(0, UPPER_BAR_MENU_HEIGHT / 2)
+		self.camera_size_shift += Vector2f(0, UPPER_BAR_MENU_HEIGHT)
 
-		self.add_child(right_menu)
+	def _init_right_menu(self):
+		self._right_menu = RightMenu(
+			pos=Vector2f(self.pos.x * 2 - RIGHT_MENU_WIDTH / 2, self.pos.y) - self.camera_pos_shift,
+			size=Vector2f(RIGHT_MENU_WIDTH, self.size.y) - self.camera_size_shift,
+			gui_style=self.gui_style
+		)
+		self.add_child(self._right_menu)
+		self.camera_pos_shift += Vector2f(RIGHT_MENU_WIDTH / 2, 0)
+		self.camera_size_shift += Vector2f(RIGHT_MENU_WIDTH, 0)
 
-		self.camera_pos_shift += Vector2f(RIGHT_MENU_BAR_WIDTH / 2, 0)
-		self.camera_size_shift += Vector2f(RIGHT_MENU_BAR_WIDTH, 0)
+	def switch_hide_right_menu(self):
+		self._right_menu.is_visible = not self._right_menu.is_visible

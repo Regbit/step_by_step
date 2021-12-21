@@ -2,7 +2,15 @@ from enum import Enum
 
 from step_by_step.common.vector import Vector3i
 
-RIGHT_MENU_BAR_WIDTH = 400
+RIGHT_MENU_WIDTH: int = 400
+UPPER_BAR_MENU_HEIGHT: int = 25
+
+
+class LayoutStyle(Enum):
+	ABSOLUTE = 1
+	FILL = 2
+	FILL_VERTICAL = 3
+	FILL_HORIZONTAL = 4
 
 
 class GUIStyle(Enum):
@@ -39,4 +47,14 @@ class GUIStyle(Enum):
 		1,
 		None,
 		Vector3i(60, 70, 180),
+	)
+
+	RED = (
+		Vector3i(18, 2, 5),
+		Vector3i(18, 2, 5),
+		Vector3i(220, 80, 120),
+		Vector3i(220, 80, 120),
+		1,
+		None,
+		Vector3i(180, 20, 60),
 	)

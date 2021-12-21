@@ -18,7 +18,7 @@ class _BaseGameObject(abc.ABC):
 	_base_name: str = NO_BASE_NAME
 	_name: Optional[str] = None
 	_parent: Optional[_BaseGameObject] = None
-	_children: Optional[Set[_BaseGameObject]] = None
+	_children: Optional[List[_BaseGameObject]] = None
 
 	object_id: int
 

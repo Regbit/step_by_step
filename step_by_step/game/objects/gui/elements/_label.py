@@ -2,6 +2,7 @@ from step_by_step.common.vector import Vector2f, Vector3i
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.graphics.label_extension import LabelExtension
 from step_by_step.graphics.objects.square import Rectangle
+from step_by_step.graphics.settings import Alignment, AnchorHorizontal, AnchorVertical
 
 
 class Label(GUIObject):
@@ -17,6 +18,9 @@ class Label(GUIObject):
 		text_color: Vector3i = None,
 		border_width: int = 0,
 		border_color: Vector3i = None,
+		anchor_x: AnchorHorizontal = AnchorHorizontal.CENTER,
+		anchor_y: AnchorVertical = AnchorVertical.CENTER,
+		align: Alignment = Alignment.LEFT
 	):
 		super(Label, self).__init__(
 			pos=pos,
@@ -41,5 +45,8 @@ class Label(GUIObject):
 				text=text,
 				font_size=round(size.y * 0.5),
 				color=text_color if text_color else color / 3,
+				anchor_x=anchor_x,
+				anchor_y=anchor_y,
+				align=align
 			)
 		)
