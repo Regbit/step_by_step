@@ -95,10 +95,12 @@ class ScreenObject(_BaseScreenObject):
 			color: Vector3i,
 			do_draw: bool,
 	):
+		super(ScreenObject, self).__init__(
+			pos=pos,
+			size=size
+		)
 		self._vertex_count = vertex_count
 		self._base_batch = base_batch
-		self._pos = pos
-		self._size = size
 		self.mode = mode
 		self.shift = shift
 		self.color = color
