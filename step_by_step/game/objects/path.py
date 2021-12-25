@@ -1,4 +1,4 @@
-from step_by_step.game.objects.units.world_object import WorldObject
+from step_by_step.game.objects.units.unit import Unit
 from step_by_step.common.vector import Vector2f, Vector3i
 from step_by_step.graphics.objects.line import Line
 from step_by_step.graphics.objects.square import SelectionBorder
@@ -6,7 +6,7 @@ from step_by_step.graphics.objects.triangle import ReverseTriangle
 from step_by_step.graphics.objects.settings import BatchGroup
 
 
-class Waypoint(WorldObject):
+class Waypoint(Unit):
 
 	_base_name = "Waypoint"
 	_batch_group = BatchGroup.PATH_OBJECT
@@ -45,7 +45,7 @@ class Waypoint(WorldObject):
 		)
 
 
-class Trajectory(WorldObject):
+class Trajectory(Unit):
 
 	_base_name = "Trajectory"
 	_batch_group = BatchGroup.PATH_OBJECT

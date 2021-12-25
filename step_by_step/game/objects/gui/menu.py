@@ -1,7 +1,9 @@
 import abc
 
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.objects.gui.elements import Panel, Label, Button
+from step_by_step.game.objects.gui.elements.panel import Panel
+from step_by_step.game.objects.gui.elements.label import Label
+from step_by_step.game.objects.gui.elements.button import Button
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.game.objects.gui.settings import GUIStyle
 from step_by_step.graphics.objects.settings import BatchGroup
@@ -21,10 +23,7 @@ class Menu(GUIObject, abc.ABC):
 	):
 		super(Menu, self).__init__(
 			pos=pos,
-			size=size,
-			is_selectable=False,
-			is_clickable=False,
-			is_visible=True
+			size=size
 		)
 		self.gui_style = gui_style
 		self._init_elements()
@@ -52,8 +51,8 @@ class RightMenu(Menu):
 				Label(
 					pos=Vector2f(0, p.y - 50),
 					size=Vector2f(350, 50),
-					text='Info',
 					color=self.gui_style.label_color,
+					text='Info',
 					text_color=self.gui_style.label_text_color,
 					border_width=self.gui_style.label_border_width,
 					border_color=self.gui_style.label_border_color,

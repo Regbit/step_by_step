@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import Dict
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.game_object import DrawnGameObject
-from step_by_step.game.objects.settings import ALIGN_ANGLE_THRESHOLD
-from step_by_step.graphics.objects.screen_object import ScreenObject
+from step_by_step.game.objects.settings import ALIGN_ANGLE_THRESHOLD, SpriteType
+from step_by_step.graphics.objects.sprites.sprite import Sprite
 
 
-class WorldObject(DrawnGameObject):
+class Unit(DrawnGameObject):
 
-	_base_name = 'World Object'
+	_base_name = 'Unit'
 
 	is_movable: bool
 	movement_velocity: float
@@ -20,23 +20,17 @@ class WorldObject(DrawnGameObject):
 		self,
 		pos: Vector2f,
 		size: Vector2f,
-		is_selectable: bool,
 		is_movable: bool,
 		movement_velocity: float,
 		rotation_velocity: float,
+		sprites: Dict[SpriteType, Sprite],
 		orientation_vec: Vector2f = None,
-		background_drawable: ScreenObject = None,
-		main_drawable: ScreenObject = None,
-		foreground_drawable: ScreenObject = None
 	):
-		super(WorldObject, self).__init__(
+		super(Unit, self).__init__(
 			pos=pos,
 			size=size,
-			is_selectable=is_selectable,
-			orientation_vec=orientation_vec,
-			background_drawable=background_drawable,
-			main_drawable=main_drawable,
-			foreground_drawable=foreground_drawable,
+			sprites=sprites,
+			orientation_vec=orientation_vec
 		)
 		self.is_movable = is_movable
 		self.movement_velocity = movement_velocity

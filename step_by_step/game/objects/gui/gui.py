@@ -18,10 +18,7 @@ class GUI(GUIObject):
 	):
 		super(GUI, self).__init__(
 			pos=pos,
-			size=size,
-			is_selectable=False,
-			is_clickable=False,
-			is_visible=True
+			size=size
 		)
 		self.gui_style = gui_style
 

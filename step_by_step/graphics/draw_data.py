@@ -21,7 +21,7 @@ class DrawData:
 		self._data = data
 
 	@property
-	def batch(self) -> str:
+	def batch_value(self) -> str:
 		return self._batch.value
 
 	@property
@@ -29,7 +29,7 @@ class DrawData:
 		return self._count
 
 	@property
-	def mode(self) -> int:
+	def mode_value(self) -> int:
 		return self._mode.value
 
 	@property

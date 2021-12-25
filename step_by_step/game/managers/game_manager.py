@@ -6,7 +6,6 @@ from pyglet.window import key, mouse
 
 from step_by_step.game.managers import KeyEvent, ObjectManager, ScreenManager, JobManager
 from step_by_step.game.objects.game_object import DrawnGameObject
-from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.game.objects.gui.gui import MainGameGUI
 from step_by_step.game.objects.gui.settings import GUIStyle
 
@@ -28,8 +27,8 @@ class GameManager:
 
 	_gui: MainGameGUI
 
-	highlighted_object: Optional[GUIObject] = None
-	clicked_object: Optional[GUIObject] = None
+	highlighted_object: Optional[DrawnGameObject] = None
+	clicked_object: Optional[DrawnGameObject] = None
 	selected_object: Optional[DrawnGameObject] = None
 
 	def __init__(self, screen_width: int, screen_height: int):
@@ -54,7 +53,7 @@ class GameManager:
 
 		self.highlighted_object = None
 		for obj in self.drawn_object_list():
-			if isinstance(obj, GUIObject) and obj.is_visible and obj.is_clickable:
+			if obj.is_visible and obj.is_highlightable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.highlight():
 						self.highlighted_object = obj
@@ -69,7 +68,7 @@ class GameManager:
 
 		self.clicked_object = None
 		for obj in self.drawn_object_list():
-			if isinstance(obj, GUIObject) and obj.is_visible and obj.is_clickable:
+			if obj.is_visible and obj.is_clickable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.click():
 						self.clicked_object = obj
@@ -84,7 +83,7 @@ class GameManager:
 
 		self.selected_object = None
 		for obj in self.drawn_object_list():
-			if obj.is_selectable:
+			if obj.is_visible and obj.is_selectable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.select():
 						self.selected_object = obj
@@ -101,11 +100,11 @@ class GameManager:
 			return True
 		return False
 
-	def key_update(self, key: int, event_type: KeyEvent, data: Dict[str, Any] = None):
+	def key_update(self, key_code: int, event_type: KeyEvent, data: Dict[str, Any] = None):
 		if event_type == KeyEvent.PRESSED:
-			self._pressed_keys.add(key)
+			self._pressed_keys.add(key_code)
 		if event_type == KeyEvent.RELEASED:
-			self._pressed_keys.remove(key)
+			self._pressed_keys.remove(key_code)
 		if data:
 			self._window_data.update(data)
 

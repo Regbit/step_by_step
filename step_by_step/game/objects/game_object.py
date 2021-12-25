@@ -2,13 +2,15 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Optional, List, Tuple, Set, Union
+from typing import Optional, List, Tuple, Union, Dict
 
+from step_by_step.common.shaped import Shaped
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.objects.settings import NO_BASE_NAME
+from step_by_step.game.objects.settings import NO_BASE_NAME, SpriteType
 from step_by_step.graphics.draw_data import DrawData
-from step_by_step.graphics.objects.screen_object import ScreenObject
+from step_by_step.graphics.label_extension import LabelExtension
 from step_by_step.graphics.objects.settings import BatchGroup
+from step_by_step.graphics.objects.sprites.sprite import Sprite
 
 log = logging.getLogger('Game Object')
 
@@ -54,85 +56,85 @@ class GameObject(_BaseGameObject):
 		return f'{self.name}({self.__class__.__name__}) #{self.object_id}'
 
 
-class DrawnGameObject(GameObject):
+class DrawnGameObject(GameObject, Shaped):
 
 	_base_name = 'Game Object'
 
-	is_selectable: bool
-	_pos: Vector2f
-	size: Vector2f
+	_state: SpriteType
+	_sprites: Dict[SpriteType, Sprite] = None
+	_is_visible: bool
+
 	orientation_vec: Vector2f
-	_batch_group: BatchGroup = BatchGroup.DEFAULT
-	_background_drawable: ScreenObject = None
-	_main_drawable: ScreenObject = None
-	_foreground_drawable: ScreenObject = None
 
 	def self_destruct_clean_up(self):
-		self._pos = None
-		self.size = None
+		self._sprites = None
 		self.orientation_vec = None
-		self._background_drawable = None
-		self._main_drawable = None
-		self._foreground_drawable = None
 
 	def __init__(
 		self,
 		pos: Vector2f,
 		size: Vector2f,
-		is_selectable: bool,
 		orientation_vec: Vector2f = None,
-		background_drawable: ScreenObject = None,
-		main_drawable: ScreenObject = None,
-		foreground_drawable: ScreenObject = None
+		sprites: Dict[SpriteType, Sprite] = None,
+		state: SpriteType = SpriteType.DEFAULT,
+		is_visible: bool = True,
 	):
-		super(DrawnGameObject, self).__init__()
-		self._pos = pos
-		self.size = size
-		self.is_selectable = is_selectable
+		super(DrawnGameObject, self).__init__(
+			pos=pos,
+			size=size
+		)
+
+		self._sprites = sprites or {}
+		self._state = state
+		self._is_visible = is_visible
 		self.orientation_vec = orientation_vec if orientation_vec else Vector2f(0, 1)
-		self._background_drawable = background_drawable
-		self._main_drawable = main_drawable
-		self._foreground_drawable = foreground_drawable
 
 	@property
-	def background_drawable(self) -> ScreenObject:
-		return self._background_drawable
+	def state(self) -> SpriteType:
+		return self._state
+
+	@state.setter
+	def state(self, new_state: SpriteType):
+		if new_state in self.sprites:
+			self.drawn_sprite.do_draw = False
+			self._state = new_state
+			self.drawn_sprite.do_draw = True
 
 	@property
-	def main_drawable(self) -> ScreenObject:
-		return self._main_drawable
+	def sprites(self) -> Dict[SpriteType, Sprite]:
+		return self._sprites
 
 	@property
-	def foreground_drawable(self) -> ScreenObject:
-		return self._foreground_drawable
+	def drawn_sprite(self) -> Sprite:
+		return self._sprites.get(self._state)
 
 	@property
-	def drawable_list(self) -> List[ScreenObject]:
-		out = []
-		if self._background_drawable:
-			out.append(self._background_drawable)
-		if self._main_drawable:
-			out.append(self._main_drawable)
-		if self._foreground_drawable:
-			out.append(self._foreground_drawable)
-		return out
+	def is_highlightable(self) -> bool:
+		return SpriteType.HIGHLIGHTED in self.sprites
+
+	@property
+	def is_clickable(self) -> bool:
+		return SpriteType.CLICKED in self.sprites
+
+	@property
+	def is_selectable(self) -> bool:
+		return SpriteType.SELECTED in self.sprites
 
 	@property
 	def draw_data(self) -> List[DrawData]:
 		out = []
-		for drawable in self.drawable_list:
-			if drawable.do_draw:
+		if self.drawn_sprite and self.drawn_sprite.do_draw:
+			for drawable in self.drawn_sprite.screen_object_stack:
 				out.append(drawable.draw_data)
 		return out
 
 	@property
+	def labels(self) -> List[LabelExtension]:
+		return self.drawn_sprite.label_stack
+
+	@property
 	def visibility_vertices(self) -> List[Vector2f]:
-		return [
-			Vector2f(self._pos.x - self.size.x, self._pos.y - self.size.y),
-			Vector2f(self._pos.x - self.size.x, self._pos.y + self.size.y),
-			Vector2f(self._pos.x + self.size.x, self._pos.y + self.size.y),
-			Vector2f(self._pos.x + self.size.x, self._pos.y - self.size.y),
-		]
+		return self.drawn_sprite.visibility_vertices
 
 	@property
 	def pos(self) -> Vector2f:
@@ -141,7 +143,7 @@ class DrawnGameObject(GameObject):
 	@pos.setter
 	def pos(self, pos: Vector2f):
 		self._pos = pos
-		self._set_drawable_pos(pos)
+		self._set_sprite_pos(pos)
 
 	@property
 	def x(self) -> float:
@@ -153,20 +155,34 @@ class DrawnGameObject(GameObject):
 
 	@property
 	def screen_data(self) -> Tuple[Vector2f, Vector2f]:
-		return self._main_drawable.screen_data
+		return self.drawn_sprite.screen_data
 
 	@property
 	def batch_group(self) -> BatchGroup:
-		return self._batch_group
+		return self.drawn_sprite.batch_group
 
-	def _set_drawable_pos(self, pos: Vector2f):
-		for drawable in self.drawable_list:
-			drawable.set_pos(vec=pos)
+	@property
+	def text_batch_group(self) -> BatchGroup:
+		return self.drawn_sprite.text_batch_group
+
+	@property
+	def is_visible(self) -> bool:
+		return self._is_visible
+
+	@is_visible.setter
+	def is_visible(self, is_visible: bool):
+		self._is_visible = is_visible
+		for ch in self._children:
+			ch.is_visible = is_visible
+
+	def _set_sprite_pos(self, pos: Vector2f):
+		for sprite in self.sprites.values():
+			sprite.set_pos(pos=pos)
 
 	def rotate(self, rad: float):
 		self.orientation_vec.rotate(rad)
-		for drawable in self.drawable_list:
-			drawable.rotate(rad)
+		for sprite in self.sprites.values():
+			sprite.rotate(rad=rad)
 
 	def move(self, vec: Union[Vector2f, float]):
 		if isinstance(vec, (int, float)):
@@ -176,17 +192,50 @@ class DrawnGameObject(GameObject):
 		self.pos += vec
 
 	def select(self) -> bool:
-		if self.is_selectable and self.foreground_drawable:
-			self.foreground_drawable.do_draw = True
-			self.foreground_drawable.set_batch(BatchGroup.SELECTED_OBJECT)
+		if self.is_selectable:
+			self.state = SpriteType.SELECTED
+			# TODO check batch change
 			return True
 		else:
 			return False
 
 	def deselect(self) -> bool:
-		if self.is_selectable and self.foreground_drawable:
-			self.foreground_drawable.do_draw = False
-			self.foreground_drawable.set_batch(None)
+		if self.is_selectable:
+			if self.is_highlightable:
+				self.state = SpriteType.HIGHLIGHTED
+			else:
+				self.state = SpriteType.DEFAULT
+			return True
+		else:
+			return False
+
+	def highlight(self) -> bool:
+		if self.is_highlightable:
+			self.state = SpriteType.HIGHLIGHTED
+			return True
+		else:
+			return False
+
+	def dehighlight(self) -> bool:
+		if self.is_highlightable:
+			self.state = SpriteType.DEFAULT
+			return True
+		else:
+			return False
+
+	def click(self) -> bool:
+		if self.is_clickable:
+			self.state = SpriteType.CLICKED
+			return True
+		else:
+			return False
+
+	def declick(self) -> bool:
+		if self.is_clickable:
+			if self.is_highlightable:
+				self.state = SpriteType.HIGHLIGHTED
+			else:
+				self.state = SpriteType.DEFAULT
 			return True
 		else:
 			return False

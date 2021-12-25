@@ -4,7 +4,7 @@ from typing import List, Union, Optional
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.jobs.action import Action, MoveToAction
 from step_by_step.game.objects.jobs.settings import Status, TaskType
-from step_by_step.game.objects.units.world_object import WorldObject
+from step_by_step.game.objects.units.unit import Unit
 from step_by_step.game.objects.game_object import GameObject
 
 
@@ -46,7 +46,7 @@ class MoveToTask(Task):
 
 	_base_name = 'Move To Task'
 
-	def __init__(self, actor: WorldObject, destination: Union[WorldObject, Vector2f]):
+	def __init__(self, actor: Unit, destination: Union[Unit, Vector2f]):
 		self.finished_actions = []
 		self.unfinished_actions = [MoveToAction(actor=actor, destination=destination)]
 		self.current_action = None

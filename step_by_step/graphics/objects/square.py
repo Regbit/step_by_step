@@ -150,7 +150,7 @@ class Diamond(Square):
 		)
 
 
-class SelectionBorder(Square):
+class SelectionBorder(Rectangle):
 
 	def __init__(
 			self,

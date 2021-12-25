@@ -3,7 +3,7 @@ from typing import Union
 
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.jobs.settings import Status
-from step_by_step.game.objects.units.world_object import WorldObject
+from step_by_step.game.objects.units.unit import Unit
 from step_by_step.game.objects.game_object import GameObject
 
 
@@ -35,7 +35,7 @@ class MoveToAction(Action):
 		self.actor = None
 		self.destination = None
 
-	def __init__(self, actor: WorldObject, destination: Union[WorldObject, Vector2f]):
+	def __init__(self, actor: Unit, destination: Union[Unit, Vector2f]):
 		super(MoveToAction, self).__init__()
 		self.actor = actor
 		self.destination = destination
