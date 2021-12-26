@@ -4,7 +4,12 @@ from step_by_step.common.vector import Vector2f, Vector3i
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.game.objects.settings import SpriteType
 from step_by_step.graphics.objects.settings import BatchGroup
-from step_by_step.graphics.objects.sprites.gui.gui_element import GUIElementDefaultSprite, GUIElementSelectedSprite
+from step_by_step.graphics.objects.sprites.gui.gui_element import (
+	GUIElementDefaultSprite,
+	GUIElementHighlightedSprite,
+	GUIElementClickedSprite,
+	GUIElementSelectedSprite,
+)
 from step_by_step.graphics.objects.sprites.sprite import Sprite
 from step_by_step.graphics.settings import Alignment, AnchorHorizontal, AnchorVertical
 
@@ -12,6 +17,9 @@ from step_by_step.graphics.settings import Alignment, AnchorHorizontal, AnchorVe
 class GUIElement(GUIObject):
 
 	_base_name = 'GUI Element'
+	_highlighted_sprite = False
+	_clicked_sprite = False
+	_selected_sprite = False
 
 	def __init__(
 		self,
@@ -55,7 +63,8 @@ class GUIElement(GUIObject):
 		anchor_y: AnchorVertical,
 		align: Alignment
 	) -> Dict[SpriteType, Sprite]:
-		return sprites or {
+		if not sprites:
+			sprites = {
 				SpriteType.DEFAULT: GUIElementDefaultSprite(
 					pos=self.pos,
 					size=self.size,
@@ -70,8 +79,11 @@ class GUIElement(GUIObject):
 					anchor_x=anchor_x,
 					anchor_y=anchor_y,
 					align=align
-				),
-				SpriteType.SELECTED: GUIElementSelectedSprite(
+				)
+			}
+
+			if self._highlighted_sprite:
+				sprites[SpriteType.HIGHLIGHTED] = GUIElementHighlightedSprite(
 					pos=self.pos,
 					size=self.size,
 					batch_group=BatchGroup.GUI_OBJECT,
@@ -86,5 +98,40 @@ class GUIElement(GUIObject):
 					anchor_y=anchor_y,
 					align=align
 				)
-			}
+
+			if self._clicked_sprite:
+				sprites[SpriteType.CLICKED] = GUIElementClickedSprite(
+					pos=self.pos,
+					size=self.size,
+					batch_group=BatchGroup.GUI_OBJECT,
+					text_batch_group=BatchGroup.GUI_TEXT_OBJECT,
+					do_draw=False,
+					color=color,
+					text=text,
+					text_color=text_color,
+					border_width=border_width,
+					border_color=border_color,
+					anchor_x=anchor_x,
+					anchor_y=anchor_y,
+					align=align
+				)
+
+			if self._selected_sprite:
+				sprites[SpriteType.SELECTED] = GUIElementSelectedSprite(
+					pos=self.pos,
+					size=self.size,
+					batch_group=BatchGroup.GUI_OBJECT,
+					text_batch_group=BatchGroup.GUI_TEXT_OBJECT,
+					do_draw=False,
+					color=color,
+					text=text,
+					text_color=text_color,
+					border_width=border_width,
+					border_color=border_color,
+					anchor_x=anchor_x,
+					anchor_y=anchor_y,
+					align=align
+				)
+
+		return sprites
 
