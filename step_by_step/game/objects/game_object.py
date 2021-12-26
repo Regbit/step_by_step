@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Optional, List, Tuple, Union, Dict
+from typing import Optional, List, Tuple, Union, Dict, Set
 
 from step_by_step.common.shaped import Shaped
 from step_by_step.common.vector import Vector2f
@@ -19,8 +19,6 @@ class _BaseGameObject(abc.ABC):
 
 	_base_name: str = NO_BASE_NAME
 	_name: Optional[str] = None
-	_parent: Optional[_BaseGameObject] = None
-	_children: Optional[List[_BaseGameObject]] = None
 
 	object_id: int
 
@@ -34,10 +32,6 @@ class _BaseGameObject(abc.ABC):
 
 	def self_destruct(self) -> bool:
 		try:
-			if self._parent:
-				self._parent = None
-			if self._children:
-				self._children = None
 			self.self_destruct_clean_up()
 			del self
 			return True
@@ -52,6 +46,15 @@ class _BaseGameObject(abc.ABC):
 
 class GameObject(_BaseGameObject, Shaped):
 
+	_base_name = 'Game Object'
+
+	_parent: Optional[GameObject] = None
+	_children: Optional[List[GameObject]] = None
+
+	def self_destruct_clean_up(self):
+		self._parent = None
+		self._children = None
+
 	def __init__(
 		self,
 		pos: Vector2f,
@@ -62,13 +65,54 @@ class GameObject(_BaseGameObject, Shaped):
 			size=size
 		)
 
+		self._children = list()
+
 	def __str__(self):
 		return f'{self.name}({self.__class__.__name__}) #{self.object_id}'
+
+	@property
+	def all_children(self) -> Set[GameObject]:
+		out = set()
+		for c in self._children:
+			if isinstance(c, GameObject):
+				out.add(c)
+				out.update(c.all_children)
+
+		return out
+
+	def unset_parent(self):
+		if self._parent and isinstance(self._parent, GameObject):
+			self._unset_parent_dimensions_change(self._parent)
+			self._parent = None
+
+	def _unset_parent_dimensions_change(self, parent_obj: GameObject):
+		self.pos -= parent_obj.pos
+
+	def set_parent(self, parent_obj: GameObject):
+		self.unset_parent()
+		self._parent = parent_obj
+		self._set_parent_dimensions_change(parent_obj=parent_obj)
+
+	def _set_parent_dimensions_change(self, parent_obj: GameObject):
+		self.pos += parent_obj.pos
+
+	def remove_child(self, obj: GameObject):
+		obj.unset_parent()
+		self._children.remove(obj)
+
+	def add_child(self, obj: GameObject):
+		obj.set_parent(self)
+		if obj not in self._children:
+			self._children.append(obj)
+
+	def add_children(self, obj_list: List[GameObject]):
+		for o in obj_list:
+			self.add_child(o)
 
 
 class DrawnGameObject(GameObject):
 
-	_base_name = 'Game Object'
+	_base_name = 'Drawn Game Object'
 
 	_state: SpriteType
 	_sprites: Dict[SpriteType, Sprite] = None
@@ -154,14 +198,6 @@ class DrawnGameObject(GameObject):
 	def pos(self, pos: Vector2f):
 		self._pos = pos
 		self._set_sprite_pos(pos)
-
-	@property
-	def x(self) -> float:
-		return self._pos.x
-
-	@property
-	def y(self) -> float:
-		return self._pos.y
 
 	@property
 	def screen_data(self) -> Tuple[Vector2f, Vector2f]:

@@ -69,7 +69,7 @@ class ViewportGUI(GUI):
 	def _init_viewport(self):
 		self._viewport = Viewport(
 			pos=Vector2f(0, 0),
-			size=self.size,
+			size=self.size-Vector2f(4, 4),
 			screen=self._screen,
 		)
 		self.add_child(self._viewport)

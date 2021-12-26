@@ -1,8 +1,8 @@
-from step_by_step.common.shaped import Shaped
 from step_by_step.common.vector import Vector2f
+from step_by_step.game.objects.game_object import GameObject
 
 
-class Camera(Shaped):
+class Camera(GameObject):
 
 	def __init__(
 		self,

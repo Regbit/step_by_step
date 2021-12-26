@@ -34,15 +34,16 @@ class GameManager:
 
 		self._object_manager.add(self._screen_manager.active_gui)
 
+	@property
 	def drawn_object_list(self) -> List[DrawnGameObject]:
-		return [o for o in self._object_manager.objects_dict.values() if o]
+		return self._object_manager.drawn_object_list
 
 	def highlight(self, mouse_x: int, mouse_y: int) -> bool:
 		if self.highlighted_object:
 			self.highlighted_object.dehighlight()
 
 		self.highlighted_object = None
-		for obj in self.drawn_object_list():
+		for obj in self.drawn_object_list:
 			if obj.is_visible and obj.is_highlightable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.highlight():
@@ -57,7 +58,7 @@ class GameManager:
 			self.clicked_object.declick()
 
 		self.clicked_object = None
-		for obj in self.drawn_object_list():
+		for obj in self.drawn_object_list:
 			if obj.is_visible and obj.is_clickable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.click():
@@ -72,7 +73,7 @@ class GameManager:
 			self.selected_object.deselect()
 
 		self.selected_object = None
-		for obj in self.drawn_object_list():
+		for obj in self.drawn_object_list:
 			if obj.is_visible and obj.is_selectable:
 				if self._screen_manager.check_mouse_over_object(mouse_x, mouse_y, obj):
 					if obj.select():
@@ -132,7 +133,7 @@ class GameManager:
 			self._screen_manager.camera_scroll_action()
 
 	def refresh_draw_data(self):
-		self._screen_manager.refresh_draw_data(self.drawn_object_list())
+		self._screen_manager.refresh_draw_data(self.drawn_object_list)
 
 	def draw(self):
 		self._screen_manager.draw()

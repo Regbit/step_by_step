@@ -4,6 +4,8 @@ from step_by_step.common.vector import Vector3i
 
 RIGHT_MENU_WIDTH: int = 400
 UPPER_BAR_MENU_HEIGHT: int = 25
+VIEWPORT_SCROLL_SPEED: int = 7
+VIEWPORT_SCROLL_BORDER_WIDTH: int = 15
 
 
 class LayoutStyle(Enum):
