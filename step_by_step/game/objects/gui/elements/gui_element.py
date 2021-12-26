@@ -17,9 +17,9 @@ from step_by_step.graphics.settings import Alignment, AnchorHorizontal, AnchorVe
 class GUIElement(GUIObject):
 
 	_base_name = 'GUI Element'
-	_highlighted_sprite = False
-	_clicked_sprite = False
-	_selected_sprite = False
+	_has_highlighted_sprite = False
+	_has_clicked_sprite = False
+	_has_selected_sprite = False
 
 	def __init__(
 		self,
@@ -82,7 +82,7 @@ class GUIElement(GUIObject):
 				)
 			}
 
-			if self._highlighted_sprite:
+			if self._has_highlighted_sprite:
 				sprites[SpriteType.HIGHLIGHTED] = GUIElementHighlightedSprite(
 					pos=self.pos,
 					size=self.size,
@@ -99,7 +99,7 @@ class GUIElement(GUIObject):
 					align=align
 				)
 
-			if self._clicked_sprite:
+			if self._has_clicked_sprite:
 				sprites[SpriteType.CLICKED] = GUIElementClickedSprite(
 					pos=self.pos,
 					size=self.size,
@@ -116,7 +116,7 @@ class GUIElement(GUIObject):
 					align=align
 				)
 
-			if self._selected_sprite:
+			if self._has_selected_sprite:
 				sprites[SpriteType.SELECTED] = GUIElementSelectedSprite(
 					pos=self.pos,
 					size=self.size,
@@ -134,4 +134,3 @@ class GUIElement(GUIObject):
 				)
 
 		return sprites
-

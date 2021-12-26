@@ -49,8 +49,6 @@ class ScreenManager:
 					)
 				for label in o.labels:
 					label.batch = self.batches[o.text_batch_group.value]
-				# if isinstance(o, GUIObject) and o.label:
-				# 	o.label.batch = self.batches[o.text_batch_group.value]
 
 	def draw(self):
 		for b in reversed(self.batches.values()):
