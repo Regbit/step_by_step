@@ -47,3 +47,19 @@ class Shaped(abc.ABC):
 	@property
 	def h(self) -> float:
 		return self._size.y if self._size else None
+
+	@property
+	def left_bound_x(self) -> float:
+		return self._pos.x - self._size.x / 2
+
+	@property
+	def right_bound_x(self) -> float:
+		return self._pos.x + self._size.x / 2
+
+	@property
+	def upper_bound_y(self) -> float:
+		return self._pos.y + self._size.y / 2
+
+	@property
+	def lower_bound_y(self) -> float:
+		return self._pos.y - self._size.y / 2

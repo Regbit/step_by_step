@@ -6,8 +6,6 @@ from pyglet.window import key, mouse
 
 from step_by_step.game.managers import KeyEvent, ObjectManager, ScreenManager, JobManager
 from step_by_step.game.objects.game_object import DrawnGameObject
-from step_by_step.game.objects.gui.gui import MainGameGUI
-from step_by_step.game.objects.gui.settings import GUIStyle
 
 
 log = logging.getLogger('Game Manager')
@@ -25,8 +23,6 @@ class GameManager:
 	_screen_manager: ScreenManager
 	_job_manager: JobManager
 
-	_gui: MainGameGUI
-
 	highlighted_object: Optional[DrawnGameObject] = None
 	clicked_object: Optional[DrawnGameObject] = None
 	selected_object: Optional[DrawnGameObject] = None
@@ -36,16 +32,10 @@ class GameManager:
 		self._screen_manager = ScreenManager(screen_width, screen_height)
 		self._job_manager = JobManager()
 
-		self._gui = MainGameGUI(
-			pos=self._screen_manager.screen_center,
-			size=self._screen_manager.screen_size,
-			gui_style=GUIStyle.BLUE
-		)
-		self._object_manager.add(self._gui)
-		self._screen_manager.camera_shift(self._gui.camera_pos_shift, self._gui.camera_size_shift)
+		self._object_manager.add(self._screen_manager.active_gui)
 
 	def drawn_object_list(self) -> List[DrawnGameObject]:
-		return [o for o in self._object_manager.objects_dict.values() if isinstance(o, DrawnGameObject)]
+		return [o for o in self._object_manager.objects_dict.values() if o]
 
 	def highlight(self, mouse_x: int, mouse_y: int) -> bool:
 		if self.highlighted_object:
@@ -111,7 +101,6 @@ class GameManager:
 	def _key_action(self):
 		if key.SPACE in self._pressed_keys and key.SPACE not in self._pressed_keys_previous:
 			self._print_info = not self._print_info
-			self._switch_hide_right_menu()
 		if key.DELETE in self._pressed_keys:
 			self.delete_selected_object()
 		if mouse.LEFT in self._pressed_keys:
@@ -126,10 +115,6 @@ class GameManager:
 				self.clicked_object = None
 
 		self._pressed_keys_previous = self._pressed_keys.copy()
-
-	def _switch_hide_right_menu(self):
-		self._gui.switch_hide_right_menu()
-		self._screen_manager.camera_shift(self._gui.camera_pos_shift, self._gui.camera_size_shift)
 
 	def game_update(self):
 		self._key_action()

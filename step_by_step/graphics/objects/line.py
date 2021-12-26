@@ -11,7 +11,7 @@ class Line(ScreenObject):
 			self,
 			vertex_1: Vector2f,
 			vertex_2: Vector2f,
-			base_batch: BatchGroup,
+			base_batch_group: BatchGroup,
 			shift: Vector2f = Vector2f(0, 0),
 	):
 		super(Line, self).__init__(
@@ -21,7 +21,7 @@ class Line(ScreenObject):
 			size=Vector2f(1, 1),
 			color=Vector3i(50, 200, 50),
 			mode=DrawMode.LINES,
-			base_batch=base_batch,
+			base_batch_group=base_batch_group,
 			do_draw=True,
 		)
 		self.vertex_1 = vertex_1
@@ -31,7 +31,7 @@ class Line(ScreenObject):
 		return Line(
 			self.vertex_1,
 			self.vertex_2,
-			self._base_batch,
+			self._base_batch_group,
 			self.shift
 		)
 
@@ -39,7 +39,7 @@ class Line(ScreenObject):
 		return Line(
 			self.vertex_1.copy,
 			self.vertex_2.copy,
-			self._base_batch,
+			self._base_batch_group,
 			self.shift
 		)
 

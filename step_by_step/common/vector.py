@@ -86,6 +86,10 @@ class Vector2f:
 	def __invert__(self):
 		return Vector2f(-self._x, -self._y)
 
+	def __eq__(self, other):
+		if isinstance(other, Vector2f):
+			return self._x == other._x and self._y == other._y
+
 	@property
 	def copy(self) -> Vector2f:
 		return copy.copy(self)

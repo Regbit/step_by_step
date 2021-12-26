@@ -25,7 +25,7 @@ class BuildingDefaultSprite(Sprite):
 					pos=pos,
 					size=size,
 					color=Vector3i(240, 200, 200),
-					base_batch=batch_group
+					base_batch_group=batch_group
 				)
 			],
 			label_stack=[],
@@ -52,12 +52,12 @@ class BuildingSelectedSprite(Sprite):
 					pos=pos,
 					size=size,
 					color=Vector3i(240, 200, 200),
-					base_batch=batch_group
+					base_batch_group=batch_group
 				),
 				SelectionBorder(
 					pos=pos,
 					size=size + Vector2f(4, 4),
-					base_batch=batch_group
+					base_batch_group=batch_group
 				)
 			],
 			label_stack=[],

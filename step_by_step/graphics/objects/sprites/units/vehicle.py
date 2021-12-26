@@ -25,7 +25,7 @@ class VehicleDefaultSprite(Sprite):
 					pos=pos,
 					size=size,
 					color=Vector3i(240, 50, 90),
-					base_batch=batch_group
+					base_batch_group=batch_group
 				)
 			],
 			label_stack=[],
@@ -52,12 +52,12 @@ class VehicleSelectedSprite(Sprite):
 					pos=pos,
 					size=size,
 					color=Vector3i(240, 50, 90),
-					base_batch=batch_group
+					base_batch_group=batch_group
 				),
 				SelectionBorder(
 					pos=pos,
 					size=size + Vector2f(2, 2),
-					base_batch=batch_group
+					base_batch_group=batch_group
 				)
 			],
 			label_stack=[],

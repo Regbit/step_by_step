@@ -50,13 +50,23 @@ class _BaseGameObject(abc.ABC):
 		raise NotImplementedError()
 
 
-class GameObject(_BaseGameObject):
+class GameObject(_BaseGameObject, Shaped):
+
+	def __init__(
+		self,
+		pos: Vector2f,
+		size: Vector2f,
+	):
+		super(GameObject, self).__init__(
+			pos=pos,
+			size=size
+		)
 
 	def __str__(self):
 		return f'{self.name}({self.__class__.__name__}) #{self.object_id}'
 
 
-class DrawnGameObject(GameObject, Shaped):
+class DrawnGameObject(GameObject):
 
 	_base_name = 'Game Object'
 

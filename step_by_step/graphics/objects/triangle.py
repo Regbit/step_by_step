@@ -13,7 +13,7 @@ class ReverseTriangle(ScreenObject):
 			pos: Vector2f,
 			size: Vector2f,
 			color: Vector3i,
-			base_batch: BatchGroup,
+			base_batch_group: BatchGroup,
 			shift: Vector2f = Vector2f(0, 0),
 	):
 		super(ReverseTriangle, self).__init__(
@@ -23,7 +23,7 @@ class ReverseTriangle(ScreenObject):
 			size=size,
 			color=color,
 			mode=DrawMode.TRIANGLE,
-			base_batch=base_batch,
+			base_batch_group=base_batch_group,
 			do_draw=True,
 		)
 
@@ -32,7 +32,7 @@ class ReverseTriangle(ScreenObject):
 			self.pos,
 			self.size,
 			self.color,
-			self._base_batch,
+			self._base_batch_group,
 			self.shift
 		)
 
@@ -41,7 +41,7 @@ class ReverseTriangle(ScreenObject):
 			self.pos.copy,
 			self.size.copy,
 			self.color.copy,
-			self._base_batch,
+			self._base_batch_group,
 			self.shift.copy
 		)
 

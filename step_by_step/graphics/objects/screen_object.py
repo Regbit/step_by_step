@@ -3,7 +3,7 @@ from __future__ import annotations
 import abc
 import copy
 import math
-from typing import List, Tuple, Optional
+from typing import List, Optional
 
 from step_by_step.common.shaped import Shaped
 from step_by_step.graphics.draw_data import DrawData
@@ -15,17 +15,24 @@ class _BaseScreenObject(Shaped):
 
 	_vertex_count: int
 	_draw_data: DrawData = None
-	_base_batch: BatchGroup
-	_batch: Optional[BatchGroup] = None
+	_base_batch_group: BatchGroup
+	_batch_group: Optional[BatchGroup] = None
+	_shift: Vector2f
 	mode: DrawMode
-	shift: Vector2f
 	color: Vector3i
-	do_draw: bool
 	orientation_rad: float = math.pi / 2
 
 	@abc.abstractmethod
 	def vertex_coordinates(self) -> List[int]:
 		raise NotImplementedError()
+
+	@property
+	def shift(self) -> Vector2f:
+		return self._shift
+
+	@property
+	def shifted_pos(self) -> Vector2f:
+		return self._pos + self._shift
 
 	@property
 	def draw_data(self) -> DrawData:
@@ -34,16 +41,12 @@ class _BaseScreenObject(Shaped):
 		return self._draw_data
 
 	@property
-	def screen_data(self) -> Tuple[Vector2f, Vector2f]:
-		return self._pos + self.shift, self._size
-
-	@property
-	def batch(self) -> BatchGroup:
-		return self._batch if self._batch else self._base_batch
+	def batch_group(self) -> BatchGroup:
+		return self._batch_group if self._batch_group else self._base_batch_group
 
 	def _update_draw_data(self):
 		self._draw_data = DrawData(
-				batch=self.batch,
+				batch=self.batch_group,
 				count=self._vertex_count,
 				mode=self.mode,
 				group=None,
@@ -53,19 +56,16 @@ class _BaseScreenObject(Shaped):
 				]
 			)
 
-	def set_batch(self, new_batch: Optional[BatchGroup]):
-		self._batch = new_batch
+	def set_batch_group(self, new_batch_group: Optional[BatchGroup]):
+		self._batch_group = new_batch_group
 
-	def set_pos(self, x: int = None, y: int = None, pos: Vector2f = None):
-		if self._pos and isinstance(self._pos, Vector2f):
-			if x is not None and y is not None:
-				self._pos._x, self._pos._y = x, y
-				self._update_draw_data()
-			elif pos:
-				self._pos = pos
-				self._update_draw_data()
-			else:
-				raise NotImplementedError(f'Not enough args passed!\n\targs: ({x, y, pos})')
+	def set_pos(self, pos: Vector2f):
+		self._pos = pos
+		self._update_draw_data()
+
+	def set_shift(self, shift: Vector2f):
+		self._shift = shift
+		self._update_draw_data()
 
 	def move(self, dir_x: int = None, dir_y: int = None, dir_vec: Vector2f = None):
 		if dir_x is not None and dir_y is not None:
@@ -87,7 +87,7 @@ class ScreenObject(_BaseScreenObject):
 	def __init__(
 			self,
 			vertex_count: int,
-			base_batch: BatchGroup,
+			base_batch_group: BatchGroup,
 			mode: DrawMode,
 			pos: Vector2f,
 			shift: Vector2f,
@@ -100,9 +100,9 @@ class ScreenObject(_BaseScreenObject):
 			size=size
 		)
 		self._vertex_count = vertex_count
-		self._base_batch = base_batch
+		self._base_batch_group = base_batch_group
+		self._shift = shift
 		self.mode = mode
-		self.shift = shift
 		self.color = color
 		self.do_draw = do_draw
 

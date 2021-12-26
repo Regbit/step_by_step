@@ -102,7 +102,7 @@ class GUIElementDefaultSprite(BaseGUIElementSprite):
 					pos=self.pos,
 					size=self.size,
 					color=border_color,
-					base_batch=self.batch_group,
+					base_batch_group=self.batch_group,
 				)
 			)
 
@@ -111,7 +111,7 @@ class GUIElementDefaultSprite(BaseGUIElementSprite):
 				pos=self.pos,
 				size=self.size - (Vector2f(border_width * 2, border_width * 2) if border_width else Vector2f(0, 0)),
 				color=color,
-				base_batch=self.batch_group
+				base_batch_group=self.batch_group
 			)
 		)
 		return screen_object_stack
@@ -132,7 +132,7 @@ class GUIElementSelectedSprite(BaseGUIElementSprite):
 					pos=self.pos,
 					size=self.size,
 					color=border_color,
-					base_batch=self.batch_group,
+					base_batch_group=self.batch_group,
 				)
 			)
 
@@ -141,7 +141,7 @@ class GUIElementSelectedSprite(BaseGUIElementSprite):
 				pos=self.pos,
 				size=self.size - (Vector2f(border_width * 2, border_width * 2) if border_width else Vector2f(0, 0)),
 				color=color,
-				base_batch=self.batch_group
+				base_batch_group=self.batch_group
 			)
 		)
 
@@ -149,7 +149,7 @@ class GUIElementSelectedSprite(BaseGUIElementSprite):
 			SelectionBorder(
 				pos=self.pos,
 				size=self.size + Vector2f(4, 4),
-				base_batch=self.batch_group
+				base_batch_group=self.batch_group
 			)
 		)
 
@@ -172,7 +172,7 @@ class GUIElementHighlightedSprite(BaseGUIElementSprite):
 					pos=self.pos,
 					size=self.size,
 					color=border_color,
-					base_batch=self.batch_group,
+					base_batch_group=self.batch_group,
 				)
 			)
 		screen_object_stack.append(
@@ -180,7 +180,7 @@ class GUIElementHighlightedSprite(BaseGUIElementSprite):
 				pos=self.pos,
 				size=self.size - (Vector2f(border_width * 2, border_width * 2) if border_width else Vector2f(0, 0)),
 				color=color + diff * 0.2,
-				base_batch=self.batch_group
+				base_batch_group=self.batch_group
 			)
 		)
 
@@ -203,7 +203,7 @@ class GUIElementClickedSprite(BaseGUIElementSprite):
 					pos=self.pos,
 					size=self.size,
 					color=border_color,
-					base_batch=self.batch_group,
+					base_batch_group=self.batch_group,
 				)
 			)
 
@@ -212,7 +212,7 @@ class GUIElementClickedSprite(BaseGUIElementSprite):
 				pos=self.pos,
 				size=self.size - (Vector2f(border_width * 2, border_width * 2) if border_width else Vector2f(0, 0)),
 				color=color + diff * 0.4,
-				base_batch=self.batch_group
+				base_batch_group=self.batch_group
 			)
 		)
 

@@ -27,20 +27,20 @@ class Waypoint(Unit):
 				shift=Vector2f(0, 16),
 				size=Vector2f(28, 28),
 				color=Vector3i(150, 240, 190),
-				base_batch=self._batch_group
+				base_batch_group=self._batch_group
 			),
 			main_drawable=ReverseTriangle(
 				pos=pos,
 				shift=Vector2f(0, 16),
 				size=Vector2f(25, 25),
 				color=Vector3i(10, 60, 40),
-				base_batch=self._batch_group
+				base_batch_group=self._batch_group
 			),
 			foreground_drawable=SelectionBorder(
 				pos=pos,
 				shift=Vector2f(0, 13),
 				size=Vector2f(28, 28),
-				base_batch=self._batch_group
+				base_batch_group=self._batch_group
 			)
 		)
 
@@ -65,6 +65,6 @@ class Trajectory(Unit):
 			main_drawable=Line(
 				vertex_1=vertex_1,
 				vertex_2=vertex_2,
-				base_batch=self._batch_group
+				base_batch_group=self._batch_group
 			)
 		)

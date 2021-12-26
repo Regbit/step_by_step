@@ -26,7 +26,7 @@ class PanelDefaultSprite(Sprite):
 					pos=pos,
 					size=size,
 					color=color,
-					base_batch=batch_group
+					base_batch_group=batch_group
 				)
 			],
 			label_stack=[],
