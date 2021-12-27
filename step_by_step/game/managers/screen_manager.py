@@ -17,15 +17,13 @@ class ScreenManager:
 
 	_screen: Shaped
 	_active_gui: ViewportGUI = None
-	batches: OrderedDict[str, Batch]
+	_batches: OrderedDict[str, Batch]
 
 	def __init__(self, screen_width: int, screen_height: int):
 		screen_size = Vector2f(screen_width, screen_height)
 		screen_center = screen_size / 2
 		self._screen = Shaped(screen_center, screen_size)
-
-		self.batches = collections.OrderedDict()
-		self._init_batches()
+		self._batches = collections.OrderedDict()
 
 	@property
 	def screen(self) -> Shaped:
@@ -44,30 +42,37 @@ class ScreenManager:
 
 	def _init_batches(self):
 		for b in BatchGroup:
-			self.batches[b.value] = Batch()
+			self._batches[b.value] = Batch()
 
 	def refresh_draw_data(self, drawn_object_list: List[DrawnGameObject]):
-		self._init_batches()
-		for o in drawn_object_list:
-			if o.drawn_sprite and self._active_gui.is_object_in_frame(o):
-				o.enrich_batches(batches=self.batches, cam_world_pos=self._active_gui.cam_world_pos)
+		if self._active_gui:
+			self._init_batches()
+			for o in drawn_object_list:
+				if o.drawn_sprite and self._active_gui.is_object_in_frame(o):
+					o.enrich_batches(batches=self._batches, cam_world_pos=self._active_gui.cam_world_pos)
 
 	def draw(self):
-		for b in reversed(self.batches.values()):
+		for b in reversed(self._batches.values()):
 			b.draw()
 
 	def check_mouse_over_object(self, mouse_x: int, mouse_y: int, obj: DrawnGameObject) -> bool:
-		pos, size = obj.screen_data
-		mul = 0 if isinstance(obj, GUIObject) else -1
-		return vertex_in_zone(mouse_x, mouse_y, pos + self._active_gui.cam_world_pos * mul, size)
+		if self._active_gui:
+			pos, size = obj.screen_data
+			mul = 0 if isinstance(obj, GUIObject) else -1
+			return vertex_in_zone(mouse_x, mouse_y, pos + self._active_gui.cam_world_pos * mul, size)
+		else:
+			return False
 
 	def camera_drag(self, x: int, y: int, dx: float, dy: float):
-		if vertex_in_zone(x, y, self._active_gui.viewport.pos, self._active_gui.viewport.size):
-			move_vec = Vector2f(dx, dy)
-			self._active_gui.viewport.scroll(move_vec)
+		if self._active_gui:
+			if vertex_in_zone(x, y, self._active_gui.viewport.pos, self._active_gui.viewport.size):
+				move_vec = Vector2f(dx, dy)
+				self._active_gui.viewport.scroll(move_vec)
 
 	def camera_scroll_flag(self, x: int, y: int):
-		self._active_gui.viewport.scroll_flag(x, y)
+		if self._active_gui:
+			self._active_gui.viewport.scroll_flag(x, y)
 
 	def camera_scroll_action(self):
-		self._active_gui.viewport.scroll_action()
+		if self._active_gui:
+			self._active_gui.viewport.scroll_action()
