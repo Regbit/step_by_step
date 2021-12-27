@@ -8,7 +8,7 @@ from step_by_step.graphics.color import Color
 from step_by_step.graphics.label_extension import LabelExtension
 from step_by_step.graphics.objects.screen_object import ScreenObject
 from step_by_step.graphics.objects.settings import BatchGroup
-from step_by_step.graphics.objects.sprites.sprite import Sprite
+from step_by_step.graphics.sprites.sprite import Sprite
 from step_by_step.graphics.objects.square import SelectionBorder, Rectangle
 from step_by_step.graphics.settings import AnchorHorizontal, AnchorVertical, Alignment
 

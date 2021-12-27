@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from step_by_step.common.vector import Vector2f, Vector3i
 from step_by_step.graphics.objects.settings import BatchGroup
-from step_by_step.graphics.objects.sprites.sprite import Sprite
+from step_by_step.graphics.sprites.sprite import Sprite
 from step_by_step.graphics.objects.square import Rectangle
 
 

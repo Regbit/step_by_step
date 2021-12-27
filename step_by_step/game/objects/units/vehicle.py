@@ -2,7 +2,7 @@ from step_by_step.game.objects.settings import SpriteType
 from step_by_step.game.objects.units.unit import Unit
 from step_by_step.common.vector import Vector2f
 from step_by_step.graphics.objects.settings import BatchGroup
-from step_by_step.graphics.objects.sprites.units.vehicle import (
+from step_by_step.graphics.sprites.units.vehicle import (
 	VehicleDefaultSprite,
 	VehicleSelectedSprite,
 )

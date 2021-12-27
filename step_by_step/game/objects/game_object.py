@@ -10,7 +10,7 @@ from step_by_step.game.objects.settings import NO_BASE_NAME, SpriteType
 from step_by_step.graphics.draw_data import DrawData
 from step_by_step.graphics.label_extension import LabelExtension
 from step_by_step.graphics.objects.settings import BatchGroup
-from step_by_step.graphics.objects.sprites.sprite import Sprite
+from step_by_step.graphics.sprites.sprite import Sprite
 
 log = logging.getLogger('Game Object')
 

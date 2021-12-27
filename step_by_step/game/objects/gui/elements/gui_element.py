@@ -4,13 +4,13 @@ from step_by_step.common.vector import Vector2f, Vector3i
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.game.objects.settings import SpriteType
 from step_by_step.graphics.objects.settings import BatchGroup
-from step_by_step.graphics.objects.sprites.gui.gui_element import (
+from step_by_step.graphics.sprites.gui.gui_element import (
 	GUIElementDefaultSprite,
 	GUIElementHighlightedSprite,
 	GUIElementClickedSprite,
 	GUIElementSelectedSprite,
 )
-from step_by_step.graphics.objects.sprites.sprite import Sprite
+from step_by_step.graphics.sprites.sprite import Sprite
 from step_by_step.graphics.settings import Alignment, AnchorHorizontal, AnchorVertical
 
 

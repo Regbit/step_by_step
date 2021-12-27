@@ -5,7 +5,7 @@ from typing import Dict
 from step_by_step.common.vector import Vector2f
 from step_by_step.game.objects.game_object import DrawnGameObject
 from step_by_step.game.objects.settings import SpriteType
-from step_by_step.graphics.objects.sprites.sprite import Sprite
+from step_by_step.graphics.sprites.sprite import Sprite
 
 
 class GUIObject(DrawnGameObject):

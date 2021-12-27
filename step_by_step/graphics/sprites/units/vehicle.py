@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from step_by_step.common.vector import Vector2f, Vector3i
 from step_by_step.graphics.objects.settings import BatchGroup
-from step_by_step.graphics.objects.sprites.sprite import Sprite
-from step_by_step.graphics.objects.square import Square, SelectionBorder
+from step_by_step.graphics.sprites.sprite import Sprite
+from step_by_step.graphics.objects.square import SelectionBorder, Diamond
 
 
-class BuildingDefaultSprite(Sprite):
+class VehicleDefaultSprite(Sprite):
 
 	def __init__(
 		self,
@@ -15,16 +15,16 @@ class BuildingDefaultSprite(Sprite):
 		batch_group: BatchGroup,
 		do_draw: bool,
 	):
-		super(BuildingDefaultSprite, self).__init__(
+		super(VehicleDefaultSprite, self).__init__(
 			pos=pos,
 			size=size,
 			batch_group=batch_group,
 			text_batch_group=BatchGroup.DEFAULT,
 			screen_object_stack=[
-				Square(
+				Diamond(
 					pos=pos,
 					size=size,
-					color=Vector3i(240, 200, 200),
+					color=Vector3i(240, 50, 90),
 					base_batch_group=batch_group
 				)
 			],
@@ -33,7 +33,7 @@ class BuildingDefaultSprite(Sprite):
 		)
 
 
-class BuildingSelectedSprite(Sprite):
+class VehicleSelectedSprite(Sprite):
 
 	def __init__(
 		self,
@@ -42,21 +42,21 @@ class BuildingSelectedSprite(Sprite):
 		batch_group: BatchGroup,
 		do_draw: bool,
 	):
-		super(BuildingSelectedSprite, self).__init__(
+		super(VehicleSelectedSprite, self).__init__(
 			pos=pos,
 			size=size,
 			batch_group=batch_group,
 			text_batch_group=BatchGroup.DEFAULT,
 			screen_object_stack=[
-				Square(
+				Diamond(
 					pos=pos,
 					size=size,
-					color=Vector3i(240, 200, 200),
+					color=Vector3i(240, 50, 90),
 					base_batch_group=batch_group
 				),
 				SelectionBorder(
 					pos=pos,
-					size=size + Vector2f(4, 4),
+					size=size + Vector2f(2, 2),
 					base_batch_group=batch_group
 				)
 			],

@@ -9,10 +9,18 @@ VIEWPORT_SCROLL_BORDER_WIDTH: int = 15
 
 
 class LayoutStyle(Enum):
-	ABSOLUTE = 1
-	FILL = 2
-	FILL_VERTICAL = 3
-	FILL_HORIZONTAL = 4
+	ABSOLUTE = 'absolute'
+	FILL = 'fill'
+	FILL_VERTICAL = 'fill vertical'
+	FILL_HORIZONTAL = 'fill horizontal'
+
+
+class LayoutAlignment(Enum):
+	TOP = 'top'
+	BOTTOM = 'bottom'
+	LEFT = 'left'
+	RIGHT = 'right'
+	CENTER = 'center'
 
 
 class GUIStyle(Enum):

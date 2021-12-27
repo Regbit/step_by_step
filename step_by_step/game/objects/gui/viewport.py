@@ -9,7 +9,7 @@ from step_by_step.game.objects.settings import SpriteType
 from step_by_step.game.objects.gui.camera import Camera
 from step_by_step.graphics.color import Color
 from step_by_step.graphics.objects.settings import BatchGroup
-from step_by_step.graphics.objects.sprites.gui.viewport import ViewportDefaultSprite
+from step_by_step.graphics.sprites.gui.viewport import ViewportDefaultSprite
 
 
 class Viewport(GUIObject):
