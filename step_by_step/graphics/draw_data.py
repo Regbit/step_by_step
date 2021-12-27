@@ -21,16 +21,16 @@ class DrawData:
 		self._data = data
 
 	@property
-	def batch_value(self) -> str:
-		return self._batch.value
+	def batch(self) -> BatchGroup:
+		return self._batch
 
 	@property
 	def count(self) -> int:
 		return self._count
 
 	@property
-	def mode_value(self) -> int:
-		return self._mode.value
+	def mode(self) -> DrawMode:
+		return self._mode
 
 	@property
 	def group(self) -> Optional[str]:
@@ -40,7 +40,7 @@ class DrawData:
 	def data(self) -> List[Tuple]:
 		return self._data
 
-	def shifted_draw_data(self, camera_pos: Vector2f) -> List[Tuple[str, List[int]]]:
+	def camera_adjusted_draw_data(self, cam_world_pos: Vector2f) -> List[Tuple[str, List[int]]]:
 		out = []
 		for d in self._data:
 			vertex_list = d[1]
@@ -50,8 +50,8 @@ class DrawData:
 					mul = 0 if 'GUI' in self._batch.value else -1
 					vertex_list.extend(
 						[
-							d[1][i*2] + mul * int(camera_pos.x),
-							d[1][i*2+1] + mul * int(camera_pos.y)
+							d[1][i*2] + mul * int(cam_world_pos.x),
+							d[1][i*2+1] + mul * int(cam_world_pos.y)
 						]
 					)
 			out.append((d[0], vertex_list))

@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import abc
 import logging
-from typing import Optional, List, Tuple, Union, Dict, Set
+from typing import Optional, List, Tuple, Union, Dict, Set, OrderedDict
+
+from pyglet.graphics import Batch
 
 from step_by_step.common.shaped import Shaped
 from step_by_step.common.vector import Vector2f
@@ -175,7 +177,7 @@ class DrawnGameObject(GameObject):
 		return SpriteType.SELECTED in self.sprites
 
 	@property
-	def draw_data(self) -> List[DrawData]:
+	def draw_data_list(self) -> List[DrawData]:
 		out = []
 		if self.drawn_sprite and self.drawn_sprite.do_draw:
 			for drawable in self.drawn_sprite.screen_object_stack:
@@ -224,6 +226,17 @@ class DrawnGameObject(GameObject):
 	def _set_sprite_pos(self, pos: Vector2f):
 		for sprite in self.sprites.values():
 			sprite.set_pos(pos=pos)
+
+	def enrich_batches(self, batches: OrderedDict[str, Batch], cam_world_pos: Vector2f):
+		for draw_data in self.draw_data_list:
+			batches[draw_data.batch.value].add(
+				draw_data.count,
+				draw_data.mode.value,
+				draw_data.group,
+				*draw_data.camera_adjusted_draw_data(cam_world_pos=cam_world_pos)
+			)
+		for label in self.labels:
+			label.batch = batches[self.text_batch_group.value]
 
 	def rotate(self, rad: float):
 		self.orientation_vec.rotate(rad)

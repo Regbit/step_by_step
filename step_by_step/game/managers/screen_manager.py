@@ -1,6 +1,5 @@
 import collections
-import typing
-from typing import List
+from typing import List, OrderedDict
 
 from pyglet.graphics import Batch
 
@@ -18,7 +17,7 @@ class ScreenManager:
 
 	_screen: Shaped
 	_active_gui: ViewportGUI = None
-	batches: typing.OrderedDict[str, Batch]
+	batches: OrderedDict[str, Batch]
 
 	def __init__(self, screen_width: int, screen_height: int):
 		screen_size = Vector2f(screen_width, screen_height)
@@ -51,15 +50,7 @@ class ScreenManager:
 		self._init_batches()
 		for o in drawn_object_list:
 			if o.drawn_sprite and self._active_gui.is_object_in_frame(o):
-				for draw_data in o.draw_data:
-					self.batches[draw_data.batch_value].add(
-						draw_data.count,
-						draw_data.mode_value,
-						draw_data.group,
-						*draw_data.shifted_draw_data(self._active_gui.cam_world_pos)
-					)
-				for label in o.labels:
-					label.batch = self.batches[o.text_batch_group.value]
+				o.enrich_batches(batches=self.batches, cam_world_pos=self._active_gui.cam_world_pos)
 
 	def draw(self):
 		for b in reversed(self.batches.values()):
