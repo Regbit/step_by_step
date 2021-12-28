@@ -4,6 +4,8 @@ import copy
 import math
 from typing import Optional, List, Tuple
 
+from step_by_step.common.settings import MATH_ROUND_PRECISION
+
 
 class Vector2f:
 
@@ -28,15 +30,15 @@ class Vector2f:
 			self._a = a
 			self._update_cartesian()
 		else:
-			ValueError(f'{self.__class__.__name__} needs ether "x" and "y" pair or "r" and "a" pair to be initialized!')
+			raise ValueError(f'{self.__class__.__name__} needs ether "x" and "y" pair or "r" and "a" pair to be initialized!')
 
 	def _update_polar(self):
-		self._r = round(math.sqrt(self._x ** 2 + self._y ** 2), 4)
-		self._a = round(math.atan2(self._y, self._x), 4)
+		self._r = round(math.sqrt(self._x ** 2 + self._y ** 2), MATH_ROUND_PRECISION)
+		self._a = round(math.atan2(self._y, self._x), MATH_ROUND_PRECISION)
 
 	def _update_cartesian(self):
-		self._x = round(self._r * math.cos(self._a), 4)
-		self._y = round(self._r * math.sin(self._a), 4)
+		self._x = round(self._r * math.cos(self._a), MATH_ROUND_PRECISION)
+		self._y = round(self._r * math.sin(self._a), MATH_ROUND_PRECISION)
 
 	def __add__(self, other):
 		if isinstance(other, Vector2f):
@@ -62,7 +64,7 @@ class Vector2f:
 
 	def __mul__(self, other):
 		if isinstance(other, (int, float)):
-			return Vector2f(round(self._x * other, 4), round(self._y * other, 4))
+			return Vector2f(round(self._x * other, MATH_ROUND_PRECISION), round(self._y * other, MATH_ROUND_PRECISION))
 		elif isinstance(other, Vector2f):
 			return self._x * other._x + self._y * other._y
 		else:
@@ -70,7 +72,7 @@ class Vector2f:
 
 	def __truediv__(self, other):
 		if isinstance(other, (int, float)):
-			return Vector2f(round(self._x / other, 4), round(self._y / other, 4))
+			return Vector2f(round(self._x / other, MATH_ROUND_PRECISION), round(self._y / other, MATH_ROUND_PRECISION))
 		else:
 			raise NotImplementedError(f"__truediv__ is not implemented for pair ({type(self)}, {type(other)})")
 
@@ -96,19 +98,19 @@ class Vector2f:
 
 	@property
 	def x(self) -> float:
-		return round(self._x, 4)
+		return round(self._x, MATH_ROUND_PRECISION)
 
 	@property
 	def y(self) -> float:
-		return round(self._y, 4)
+		return round(self._y, MATH_ROUND_PRECISION)
 
 	@property
 	def r(self) -> float:
-		return round(self._r, 4)
+		return round(self._r, MATH_ROUND_PRECISION)
 
 	@property
 	def a(self) -> float:
-		return round(self._a, 4)
+		return round(self._a, MATH_ROUND_PRECISION)
 
 	@property
 	def list(self) -> List[float]:
@@ -130,7 +132,7 @@ class Vector2f:
 		return (other - self).len
 
 	def angle_between(self, other: Vector2f) -> float:
-		return round(other.a - self.a, 4)
+		return round(other.a - self.a, MATH_ROUND_PRECISION)
 
 	def set_angle(self, new_angle: float):
 		if new_angle < 0:

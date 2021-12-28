@@ -13,7 +13,7 @@ from step_by_step.graphics.settings import (
 )
 from step_by_step.graphics.color import Color
 
-path = Path(__file__).parent.parent.absolute().joinpath('resources/fonts/')
+path = Path(__file__).parent.parent.parent.absolute().joinpath('resources/fonts/')
 font.add_directory(Path.joinpath(path))
 oswald = font.load('Oswald')
 
