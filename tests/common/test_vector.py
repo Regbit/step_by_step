@@ -10,12 +10,22 @@ from tests.helpers import (
 )
 
 
-def test__v2f_init__fail_1():
+def test__v2f__init__no_args__fail_1():
 	with pytest.raises(ValueError):
 		Vector2f()
 
 
-def test__v2f_init_cartesian__ok_1():
+def test__v2f__init__not_enough_args__fail_1():
+	with pytest.raises(ValueError):
+		Vector2f(x=1)
+
+
+def test__v2f__init__not_enough_args__fail_2():
+	with pytest.raises(ValueError):
+		Vector2f(r=1)
+
+
+def test__v2f__init__cartesian__ok_1():
 	v = Vector2f(x=0, y=1)
 
 	expected_x = 0
@@ -36,7 +46,7 @@ def test__v2f_init_cartesian__ok_1():
 	assert v.angle == expected_a
 
 
-def test__v2f_init_cartesian__ok_2():
+def test__v2f__init__cartesian__ok_2():
 	v = Vector2f(x=3, y=4)
 
 	expected_x = 3
@@ -57,7 +67,7 @@ def test__v2f_init_cartesian__ok_2():
 	assert v.angle == expected_a
 
 
-def test__v2f_init_polar__ok_1():
+def test__v2f__init__polar__ok_1():
 	v = Vector2f(r=1, a=0)
 
 	expected_x = 1
@@ -78,7 +88,7 @@ def test__v2f_init_polar__ok_1():
 	assert v.angle == expected_a
 
 
-def test__v2f_init_polar__ok_2():
+def test__v2f__init__polar__ok_2():
 	v = Vector2f(r=5, a=calc_angle(3, 4, MATH_ROUND_PRECISION))
 
 	expected_x = 3
@@ -99,7 +109,7 @@ def test__v2f_init_polar__ok_2():
 	assert v.angle == expected_a
 
 
-def test__v2f_init_polar__ok_3():
+def test__v2f__init__polar__ok_3():
 	v = Vector2f(r=7, a=1.5)
 
 	expected_r = 7
@@ -120,7 +130,7 @@ def test__v2f_init_polar__ok_3():
 	assert v.y == expected_y
 
 
-def test__v2f_add_v2f__ok_1():
+def test__v2f__add__v2f__ok_1():
 	v1 = Vector2f(x=1, y=0)
 	v2 = Vector2f(x=0, y=1)
 
@@ -132,7 +142,7 @@ def test__v2f_add_v2f__ok_1():
 	assert v3.a == calc_angle(v1.x + v2.x, v1.y + v2.y, MATH_ROUND_PRECISION)
 
 
-def test__v2f_add_v2f__ok_2():
+def test__v2f__add__v2f__ok_2():
 	v1 = Vector2f(x=-1, y=2)
 	v2 = Vector2f(x=3, y=-1)
 
@@ -144,7 +154,7 @@ def test__v2f_add_v2f__ok_2():
 	assert v3.a == calc_angle(v1.x + v2.x, v1.y + v2.y, MATH_ROUND_PRECISION)
 
 
-def test__v2f_add_list__ok_1():
+def test__v2f__add__list__ok_1():
 	v1 = Vector2f(x=1, y=0)
 	v2 = [0, 1]
 
@@ -156,7 +166,15 @@ def test__v2f_add_list__ok_1():
 	assert v3.a == calc_angle(v1.x + v2[0], v1.y + v2[1], MATH_ROUND_PRECISION)
 
 
-def test__v2f_add_list__fail_1():
+def test__v2f__add__list_too_short__fail_1():
+	v1 = Vector2f(x=1, y=0)
+	v2 = [4]
+
+	with pytest.raises(NotImplementedError):
+		v1 + v2
+
+
+def test__v2f__add__list_too_long__fail_1():
 	v1 = Vector2f(x=1, y=0)
 	v2 = [0, 1, 3]
 
@@ -164,7 +182,7 @@ def test__v2f_add_list__fail_1():
 		v1 + v2
 
 
-def test__v2f_add_tuple__ok_1():
+def test__v2f__add__tuple__ok_1():
 	v1 = Vector2f(x=-1, y=2)
 	v2 = (0, 1)
 
@@ -176,7 +194,15 @@ def test__v2f_add_tuple__ok_1():
 	assert v3.a == calc_angle(v1.x + v2[0], v1.y + v2[1], MATH_ROUND_PRECISION)
 
 
-def test__v2f_add_tuple__fail_1():
+def test__v2f__add__tuple_too_short__fail_1():
+	v1 = Vector2f(x=1, y=0)
+	v2 = tuple([4])
+
+	with pytest.raises(NotImplementedError):
+		v1 + v2
+
+
+def test__v2f__add__tuple_too_long__fail_1():
 	v1 = Vector2f(x=1, y=0)
 	v2 = (0, 1, 3)
 
@@ -184,7 +210,7 @@ def test__v2f_add_tuple__fail_1():
 		v1 + v2
 
 
-def test__v2f_add__fail_1():
+def test__v2f__add__unsupported_type__fail_1():
 	v1 = Vector2f(x=1, y=0)
 	v2 = '3, 4'
 
