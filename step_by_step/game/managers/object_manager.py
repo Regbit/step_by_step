@@ -47,7 +47,7 @@ class ObjectManager:
 			self.objects_dict[new_id] = obj
 
 			if isinstance(obj, GUIObject):
-				self.add_all(obj.all_children)
+				self.add_all(obj.all_children_in_hierarchy)
 
 			return obj
 

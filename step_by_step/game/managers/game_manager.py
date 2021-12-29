@@ -132,10 +132,8 @@ class GameManager:
 		if mouse.MIDDLE not in self._pressed_keys:
 			self._screen_manager.camera_scroll_action()
 
-	def refresh_draw_data(self):
-		self._screen_manager.refresh_draw_data(self.drawn_object_list)
-
 	def draw(self):
+		self._screen_manager.refresh_draw_data(self.drawn_object_list)
 		self._screen_manager.draw()
 
 	def post_code(self):

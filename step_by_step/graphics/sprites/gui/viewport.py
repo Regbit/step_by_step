@@ -30,28 +30,28 @@ class ViewportDefaultSprite(Sprite):
 		color = color.value if isinstance(color, Color) else color
 
 		self._left_band = Rectangle(
-			pos=screen.pos,
+			pos=pos,
 			size=screen.size,
 			color=color,
 			base_batch_group=batch_group
 		)
 
 		self._right_band = Rectangle(
-			pos=screen.pos,
+			pos=pos,
 			size=screen.size,
 			color=color,
 			base_batch_group=batch_group
 		)
 
 		self._upper_band = Rectangle(
-			pos=screen.pos,
+			pos=pos,
 			size=screen.size,
 			color=color,
 			base_batch_group=batch_group
 		)
 
 		self._lower_band = Rectangle(
-			pos=screen.pos,
+			pos=pos,
 			size=screen.size,
 			color=color,
 			base_batch_group=batch_group
@@ -76,16 +76,12 @@ class ViewportDefaultSprite(Sprite):
 		self._update_bands()
 
 	def _update_bands(self):
-		diff = self.left_bound_x - self._screen.left_bound_x
+		diff = (self._screen.w - self.w) / 2
 		self._left_band.set_shift(Vector2f(-self._screen.w + diff, 0))
-
-		diff = self._screen.right_bound_x - self.right_bound_x
 		self._right_band.set_shift(Vector2f(self._screen.w - diff, 0))
 
-		diff = self._screen.upper_bound_y - self.upper_bound_y
+		diff = (self._screen.h - self.h) / 2
 		self._upper_band.set_shift(Vector2f(0, self._screen.h - diff))
-
-		diff = self.lower_bound_y - self._screen.lower_bound_y
 		self._lower_band.set_shift(Vector2f(0, -self._screen.h + diff))
 
 	def set_pos(self, pos: Vector2f):

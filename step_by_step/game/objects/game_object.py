@@ -19,10 +19,13 @@ log = logging.getLogger('Game Object')
 
 class _BaseGameObject(abc.ABC):
 
-	_base_name: str = NO_BASE_NAME
 	_name: Optional[str] = None
 
-	object_id: int
+	object_id: int = None
+
+	@property
+	def _base_name(self) -> str:
+		return NO_BASE_NAME
 
 	@property
 	def name(self) -> str:
@@ -54,7 +57,9 @@ class GameObject(_BaseGameObject, Shaped):
 	_children: Optional[List[GameObject]] = None
 
 	def self_destruct_clean_up(self):
-		self._parent = None
+		self.change_parent(None)
+		for _ in self._children:
+			del _
 		self._children = None
 
 	def __init__(
@@ -68,48 +73,57 @@ class GameObject(_BaseGameObject, Shaped):
 		)
 
 		self._children = list()
+		self._parent_pos = None
 
 	def __str__(self):
 		return f'{self.name}({self.__class__.__name__}) #{self.object_id}'
 
 	@property
-	def all_children(self) -> Set[GameObject]:
+	def children(self) -> List[GameObject]:
+		return self._children
+
+	@property
+	def parent(self) -> GameObject:
+		return self._parent
+
+	@property
+	def pos(self) -> Vector2f:
+		if self._parent:
+			return self._pos + self._parent.pos
+		else:
+			return self._pos
+
+	@pos.setter
+	def pos(self, pos: Vector2f):
+		self._pos = pos
+
+	@property
+	def all_children_in_hierarchy(self) -> Set[GameObject]:
 		out = set()
 		for c in self._children:
 			if isinstance(c, GameObject):
 				out.add(c)
-				out.update(c.all_children)
+				out.update(c.all_children_in_hierarchy)
 
 		return out
 
-	def unset_parent(self):
-		if self._parent and isinstance(self._parent, GameObject):
-			self._unset_parent_dimensions_change(self._parent)
-			self._parent = None
-
-	def _unset_parent_dimensions_change(self, parent_obj: GameObject):
-		self.pos -= parent_obj.pos
-
-	def set_parent(self, parent_obj: GameObject):
-		self.unset_parent()
-		self._parent = parent_obj
-		self._set_parent_dimensions_change(parent_obj=parent_obj)
-
-	def _set_parent_dimensions_change(self, parent_obj: GameObject):
-		self.pos += parent_obj.pos
-
-	def remove_child(self, obj: GameObject):
-		obj.unset_parent()
-		self._children.remove(obj)
+	def change_parent(self, parent: Optional[GameObject]):
+		child = self
+		if parent:
+			parent.children.append(child)
+			if child.parent:
+				child.parent._children.remove(child)
+			child._parent = parent
+		else:
+			child.parent.children.remove(child)
+			child._parent = None
 
 	def add_child(self, obj: GameObject):
-		obj.set_parent(self)
-		if obj not in self._children:
-			self._children.append(obj)
+		obj.change_parent(self)
 
 	def add_children(self, obj_list: List[GameObject]):
 		for o in obj_list:
-			self.add_child(o)
+			o.change_parent(self)
 
 
 class DrawnGameObject(GameObject):
@@ -193,15 +207,6 @@ class DrawnGameObject(GameObject):
 		return self.drawn_sprite.visibility_vertices
 
 	@property
-	def pos(self) -> Vector2f:
-		return self._pos
-
-	@pos.setter
-	def pos(self, pos: Vector2f):
-		self._pos = pos
-		self._set_sprite_pos(pos)
-
-	@property
 	def screen_data(self) -> Tuple[Vector2f, Vector2f]:
 		return self.drawn_sprite.screen_data
 
@@ -226,6 +231,10 @@ class DrawnGameObject(GameObject):
 	def _set_sprite_pos(self, pos: Vector2f):
 		for sprite in self.sprites.values():
 			sprite.set_pos(pos=pos)
+
+	def change_parent(self, parent: Optional[GameObject]):
+		super(DrawnGameObject, self).change_parent(parent=parent)
+		self._set_sprite_pos(self.pos)
 
 	def enrich_batches(self, batches: OrderedDict[str, Batch], cam_world_pos: Vector2f):
 		for draw_data in self.draw_data_list:

@@ -9,7 +9,6 @@ class App(Window):
 
 	w = 1920
 	h = 1080
-	print_info = True
 
 	_game_manager: GameManager
 
@@ -22,9 +21,6 @@ class App(Window):
 	def render(self):
 		# update game logic
 		self._game_manager.game_update()
-
-		# refresh draw data
-		self._game_manager.refresh_draw_data()
 
 		# draw
 		self.clear()

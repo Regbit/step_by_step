@@ -42,14 +42,29 @@ class Vector2f:
 
 	def __add__(self, other):
 		if isinstance(other, Vector2f):
-			return Vector2f(self._x + other._x, self._y + other._y)
+			return Vector2f(
+				x=self._x + other._x,
+				y=self._y + other._y
+			)
 		elif isinstance(other, (list, tuple)) and len(other) == 2:
-			return Vector2f(self._x + other[0], self._y + other[1])
+			return Vector2f(
+				x=self._x + other[0],
+				y=self._y + other[1]
+			)
 		else:
 			raise NotImplementedError(f"__add__ is not implemented for pair ({type(self)}, {type(other)})")
 
 	def __iadd__(self, other):
-		return self + other
+		if isinstance(other, Vector2f):
+			self._x += other._x
+			self._y += other._y
+		elif isinstance(other, (list, tuple)) and len(other) == 2:
+			self._x += other[0]
+			self._y += other[1]
+		else:
+			raise NotImplementedError(f"__add__ is not implemented for pair ({type(self)}, {type(other)})")
+		self._update_polar()
+		return self
 
 	def __sub__(self, other):
 		if isinstance(other, Vector2f):

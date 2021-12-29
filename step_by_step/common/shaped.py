@@ -26,11 +26,11 @@ class Shaped(abc.ABC):
 
 	@property
 	def x(self) -> float:
-		return self._pos.x if self._pos else None
+		return self.pos.x if self.pos else None
 
 	@property
 	def y(self) -> float:
-		return self._pos.y if self._pos else None
+		return self.pos.y if self.pos else None
 
 	@property
 	def size(self) -> Vector2f:
@@ -42,24 +42,24 @@ class Shaped(abc.ABC):
 
 	@property
 	def w(self) -> float:
-		return self._size.x if self._size else None
+		return self.size.x if self.size else None
 
 	@property
 	def h(self) -> float:
-		return self._size.y if self._size else None
+		return self.size.y if self.size else None
 
 	@property
 	def left_bound_x(self) -> float:
-		return self._pos.x - self._size.x / 2
+		return self.pos.x - self.size.x / 2
 
 	@property
 	def right_bound_x(self) -> float:
-		return self._pos.x + self._size.x / 2
+		return self.pos.x + self.size.x / 2
 
 	@property
 	def upper_bound_y(self) -> float:
-		return self._pos.y + self._size.y / 2
+		return self.pos.y + self.size.y / 2
 
 	@property
 	def lower_bound_y(self) -> float:
-		return self._pos.y - self._size.y / 2
+		return self.pos.y - self.size.y / 2
