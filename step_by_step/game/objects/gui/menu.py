@@ -6,14 +6,12 @@ from step_by_step.game.objects.gui.elements.label import Label
 from step_by_step.game.objects.gui.elements.button import Button
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.game.objects.gui.settings import GUIStyle
-from step_by_step.graphics.objects.settings import BatchGroup
 from step_by_step.graphics.settings import Alignment
 
 
 class Menu(GUIObject, abc.ABC):
 
 	_base_name = 'Menu'
-	_batch_group = BatchGroup.GUI_OBJECT_BACKGROUND
 
 	def __init__(
 		self,

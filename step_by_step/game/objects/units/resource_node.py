@@ -11,7 +11,6 @@ from step_by_step.graphics.sprites.units.resource_node import (
 class ResourceNode(Unit):
 
 	_base_name = 'Resource Node'
-	_batch_group = BatchGroup.WORLD_STATIC_OBJECT
 
 	def __init__(
 		self,

@@ -5,13 +5,11 @@ from step_by_step.game.objects.gui.menu import RightMenu, UpperBarMenu
 from step_by_step.game.objects.gui.gui_object import GUIObject
 from step_by_step.game.objects.gui.settings import GUIStyle, UPPER_BAR_MENU_HEIGHT, RIGHT_MENU_WIDTH
 from step_by_step.game.objects.gui.viewport import Viewport
-from step_by_step.graphics.objects.settings import BatchGroup
 
 
 class GUI(GUIObject):
 
 	_base_name = 'GUI'
-	_batch_group = BatchGroup.GUI_OBJECT_BACKGROUND
 	_screen: Shaped
 
 	def self_destruct_clean_up(self):
