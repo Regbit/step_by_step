@@ -1,0 +1,13 @@
+[[source]]
+url = 'https://pypi.python.org/simple'
+verify_ssl = true
+name = 'pypi'
+
+[packages]
+pyglet = "==1.5.21"
+
+[dev-packages]
+pytest = "==6.2.5"
+
+[requires]
+python_version = "3.9"
