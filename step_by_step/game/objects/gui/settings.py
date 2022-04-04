@@ -8,21 +8,6 @@ VIEWPORT_SCROLL_SPEED: int = 7
 VIEWPORT_SCROLL_BORDER_WIDTH: int = 15
 
 
-class LayoutStyle(Enum):
-	ABSOLUTE = 'absolute'
-	FILL = 'fill'
-	FILL_VERTICAL = 'fill vertical'
-	FILL_HORIZONTAL = 'fill horizontal'
-
-
-class LayoutAlignment(Enum):
-	TOP = 'top'
-	BOTTOM = 'bottom'
-	LEFT = 'left'
-	RIGHT = 'right'
-	CENTER = 'center'
-
-
 class GUIStyle(Enum):
 
 	def __new__(cls, *args, **kwds):
@@ -68,3 +53,49 @@ class GUIStyle(Enum):
 		None,
 		Vector3i(180, 20, 60),
 	)
+
+
+class LayoutStyleCompatibilityError(Exception):
+	pass
+
+
+class LayoutStyle(Enum):
+	ABSOLUTE = 'ABSOLUTE'
+	FILL = 'FILL'
+	FILL_VERTICAL = 'FILL_VERTICAL'
+	FILL_HORIZONTAL = 'FILL_HORIZONTAL'
+
+
+class SnapLayoutZone(Enum):
+	TOP = 'TOP'
+	BOTTOM = 'BOTTOM'
+	LEFT = 'LEFT'
+	RIGHT = 'RIGHT'
+	CENTER = 'CENTER'
+
+
+POSSIBLE_LAYOUTS = {
+
+	'AbsoluteLayout': {
+		LayoutStyle.ABSOLUTE
+	},
+
+	'GridLayout': {
+		LayoutStyle.FILL,
+		LayoutStyle.FILL_VERTICAL,
+		LayoutStyle.FILL_HORIZONTAL
+	},
+
+	'SnapLayout': {
+		LayoutStyle.FILL,
+		LayoutStyle.FILL_VERTICAL,
+		LayoutStyle.FILL_HORIZONTAL
+	},
+
+	'StackLayout': {
+		LayoutStyle.FILL,
+		LayoutStyle.FILL_VERTICAL,
+		LayoutStyle.FILL_HORIZONTAL
+	},
+
+}

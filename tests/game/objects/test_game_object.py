@@ -1,7 +1,12 @@
 import pytest
 
 from step_by_step.common.vector import Vector2f
-from step_by_step.game.objects.game_object import GameObject
+from step_by_step.game.objects.game_object import (
+	GameObject,
+	SelfParenthoodError,
+	CircularParenthoodError,
+	ExistingParenthoodError
+)
 
 
 def test__game_object__init__ok_1():
@@ -55,6 +60,33 @@ def test__game_object__change_parent__set__ok_1():
 
 	assert child_o.pos == parent_pos + child_pos
 	assert child_o._pos == child_pos
+
+
+def test__game_object__change_parent__set__fail_1():
+	o = GameObject(Vector2f(1, 1), Vector2f(1, 1))
+
+	with pytest.raises(SelfParenthoodError):
+		o.change_parent(parent=o)
+
+
+def test__game_object__change_parent__set__fail_2():
+	par_o = GameObject(Vector2f(1, 1), Vector2f(1, 1))
+	ch_o = GameObject(Vector2f(1, 1), Vector2f(1, 1))
+
+	ch_o.change_parent(par_o)
+
+	with pytest.raises(CircularParenthoodError):
+		par_o.change_parent(parent=ch_o)
+
+
+def test__game_object__change_parent__set__fail_3():
+	par_o = GameObject(Vector2f(1, 1), Vector2f(1, 1))
+	ch_o = GameObject(Vector2f(1, 1), Vector2f(1, 1))
+
+	ch_o.change_parent(par_o)
+
+	with pytest.raises(ExistingParenthoodError):
+		ch_o.change_parent(par_o)
 
 
 def test__game_object__change_parent__unset__ok_1():

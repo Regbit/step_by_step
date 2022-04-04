@@ -17,6 +17,26 @@ from step_by_step.graphics.sprites.sprite import Sprite
 log = logging.getLogger('Game Object')
 
 
+class ParenthoodError(Exception):
+	pass
+
+
+class SelfParenthoodError(ParenthoodError):
+	pass
+
+
+class CircularParenthoodError(ParenthoodError):
+	pass
+
+
+class ExistingParenthoodError(ParenthoodError):
+	pass
+
+
+class ClassParenthoodError(ParenthoodError):
+	pass
+
+
 class _BaseGameObject(abc.ABC):
 
 	_name: Optional[str] = None
@@ -98,6 +118,14 @@ class GameObject(_BaseGameObject, Shaped):
 		self._pos = pos
 
 	@property
+	def size(self) -> Vector2f:
+		return super(GameObject, self).size
+
+	@size.setter
+	def size(self, new_size: Vector2f):
+		self._size = new_size
+
+	@property
 	def all_children_in_hierarchy(self) -> Set[GameObject]:
 		out = set()
 		for c in self._children:
@@ -107,8 +135,35 @@ class GameObject(_BaseGameObject, Shaped):
 
 		return out
 
+	def _change_parent_logic_check(self, parent: Optional[GameObject]):
+		if parent:
+			child = self
+
+			if parent is child:
+				raise SelfParenthoodError(
+					f"Object can't be a parent of itself!"
+					f"Object: '{child}'"
+				)
+			if parent in child._children:
+				raise CircularParenthoodError(
+					f"Object can't be a parent of it's parent!"
+					f"Object: '{parent}'"
+					f"Parent: '{child}'"
+				)
+			if child in parent._children:
+				raise ExistingParenthoodError(
+					f"Object is already a child of the parent!"
+					f"Object: '{child}'"
+					f"Parent: '{parent}'"
+				)
+
 	def change_parent(self, parent: Optional[GameObject]):
 		child = self
+
+		# Logic checks
+		self._change_parent_logic_check(parent=parent)
+
+		# Action
 		if parent:
 			parent.children.append(child)
 			if child.parent:

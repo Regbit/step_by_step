@@ -37,7 +37,7 @@ class Shaped(abc.ABC):
 		return self._size
 
 	@size.setter
-	def size(self, new_pos: Vector2f):
+	def size(self, new_size: Vector2f):
 		raise NotImplementedError()
 
 	@property

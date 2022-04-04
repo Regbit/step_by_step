@@ -40,22 +40,6 @@ class ViewportGUI(GUI):
 		super(ViewportGUI, self).self_destruct_clean_up()
 		self._viewport = None
 
-	def __init__(
-		self,
-		pos: Vector2f,
-		size: Vector2f,
-		screen: Shaped,
-		gui_style: GUIStyle
-	):
-		super(ViewportGUI, self).__init__(
-			pos=pos,
-			size=size,
-			screen=screen,
-			gui_style=gui_style
-		)
-
-		self._init_viewport()
-
 	@property
 	def viewport(self) -> Viewport:
 		return self._viewport
@@ -64,10 +48,10 @@ class ViewportGUI(GUI):
 	def cam_world_pos(self) -> Vector2f:
 		return self._viewport.camera.pos
 
-	def _init_viewport(self):
+	def _init_viewport(self, border_width: int = 0):
 		self._viewport = Viewport(
 			pos=Vector2f(0, 0),
-			size=self.size-Vector2f(4, 4),
+			size=self.size-(Vector2f(border_width*2, border_width*2) if border_width > 0 else Vector2f(0, 0)),
 			screen=self._screen,
 		)
 		self.add_child(self._viewport)
