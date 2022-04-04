@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "step-by-step"
+version = "0.1.0"
+description = ""
+authors = ["Robert <regbit4@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pyglet = "^1.5.23"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
